@@ -1,6 +1,6 @@
 # cedar-repo-server
 
-CEDAR server to retrieve object by @id
+CEDAR server to retrieve objects by @id
 
 ## Getting started
 
