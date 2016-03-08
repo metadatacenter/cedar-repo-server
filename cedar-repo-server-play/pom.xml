@@ -20,48 +20,58 @@
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-utils-core</artifactId>
-      <version>${org.metadatacenter.cedar.server.utils.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-utils-play</artifactId>
-      <version>${org.metadatacenter.cedar.server.utils.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-template-operations</artifactId>
-      <version>${org.metadatacenter.cedar.template.operations.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.typesafe.play</groupId>
       <artifactId>play_${play2.scala.version}</artifactId>
-      <version>${play2.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.typesafe.play</groupId>
-      <artifactId>play-test_${play2.scala.version}</artifactId>
-      <version>${play2.version}</version>
-      <scope>test</scope>
+      <artifactId>build-link</artifactId>
     </dependency>
 
-    <!-- Required for IntegrationSpec -->
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>${apache.httpclient.version}</version>
-      <scope>test</scope>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
     </dependency>
 
-    <!-- Play WS -->
+    <dependency>
+      <groupId>org.scala-lang.modules</groupId>
+      <artifactId>scala-xml_${play2.scala.version}</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.typesafe</groupId>
+      <artifactId>config</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>com.typesafe.play</groupId>
-      <artifactId>play-java-ws_2.11</artifactId>
-      <version>${play-java-ws.version}</version>
+      <artifactId>twirl-api_${play2.scala.version}</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
