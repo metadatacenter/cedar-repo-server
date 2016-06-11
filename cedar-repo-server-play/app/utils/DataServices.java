@@ -5,7 +5,8 @@ import controllers.TemplateElementRepoServerController;
 import controllers.TemplateFieldRepoServerController;
 import controllers.TemplateInstanceRepoServerController;
 import controllers.TemplateRepoServerController;
-import org.metadatacenter.constant.ConfigConstants;
+import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.service.TemplateElementService;
 import org.metadatacenter.server.service.TemplateFieldService;
 import org.metadatacenter.server.service.TemplateInstanceService;
@@ -14,8 +15,6 @@ import org.metadatacenter.server.service.mongodb.TemplateElementServiceMongoDB;
 import org.metadatacenter.server.service.mongodb.TemplateFieldServiceMongoDB;
 import org.metadatacenter.server.service.mongodb.TemplateInstanceServiceMongoDB;
 import org.metadatacenter.server.service.mongodb.TemplateServiceMongoDB;
-import play.Configuration;
-import play.Play;
 
 public class DataServices {
 
@@ -24,44 +23,40 @@ public class DataServices {
   public static TemplateService<String, JsonNode> templateService;
   public static TemplateFieldService<String, JsonNode> templateFieldService;
   public static TemplateInstanceService<String, JsonNode> templateInstanceService;
+  private static CedarConfig cedarConfig;
 
   public static DataServices getInstance() {
     return instance;
   }
 
   private DataServices() {
-    Configuration config = Play.application().configuration();
+    cedarConfig = CedarConfig.getInstance();
+
     templateElementService = new TemplateElementServiceMongoDB(
-        config.getString(ConfigConstants.MONGODB_DATABASE_NAME),
-        config.getString(ConfigConstants.TEMPLATE_ELEMENTS_COLLECTION_NAME),
-        config.getString(ConfigConstants.LINKED_DATA_ID_PATH_BASE) + config.getString(ConfigConstants
-            .LINKED_DATA_ID_PATH_SUFFIX_TEMPLATE_ELEMENTS)
-    );
+        cedarConfig.getMongoConfig().getDatabaseName(),
+        cedarConfig.getMongoCollectionName(CedarNodeType.ELEMENT),
+        cedarConfig.getLinkedDataPrefix(CedarNodeType.ELEMENT));
+
     templateService = new TemplateServiceMongoDB(
-        config.getString(ConfigConstants.MONGODB_DATABASE_NAME),
-        config.getString(ConfigConstants.TEMPLATES_COLLECTION_NAME),
-        config.getString(ConfigConstants.LINKED_DATA_ID_PATH_BASE) + config.getString(ConfigConstants
-            .LINKED_DATA_ID_PATH_SUFFIX_TEMPLATES),
-        templateElementService
-    );
+        cedarConfig.getMongoConfig().getDatabaseName(),
+        cedarConfig.getMongoCollectionName(CedarNodeType.TEMPLATE),
+        cedarConfig.getLinkedDataPrefix(CedarNodeType.TEMPLATE),
+        templateElementService);
+
     templateInstanceService = new TemplateInstanceServiceMongoDB(
-        config.getString(ConfigConstants.MONGODB_DATABASE_NAME),
-        config.getString(ConfigConstants.TEMPLATE_INSTANCES_COLLECTION_NAME),
-        config.getString(ConfigConstants.LINKED_DATA_ID_PATH_BASE) + config.getString(ConfigConstants
-            .LINKED_DATA_ID_PATH_SUFFIX_TEMPLATE_INSTANCES)
-    );
+        cedarConfig.getMongoConfig().getDatabaseName(),
+        cedarConfig.getMongoCollectionName(CedarNodeType.INSTANCE),
+        cedarConfig.getLinkedDataPrefix(CedarNodeType.INSTANCE));
+
     templateFieldService = new TemplateFieldServiceMongoDB(
-        config.getString(ConfigConstants.MONGODB_DATABASE_NAME),
-        config.getString(ConfigConstants.TEMPLATE_FIELDS_COLLECTION_NAME),
-        config.getString(ConfigConstants.LINKED_DATA_ID_PATH_BASE) + config.getString(ConfigConstants
-            .LINKED_DATA_ID_PATH_SUFFIX_TEMPLATE_FIELDS)
-    );
+        cedarConfig.getMongoConfig().getDatabaseName(),
+        cedarConfig.getMongoCollectionName(CedarNodeType.FIELD),
+        cedarConfig.getLinkedDataPrefix(CedarNodeType.FIELD));
 
     TemplateElementRepoServerController.injectTemplateElementService(templateElementService);
     TemplateRepoServerController.injectTemplateService(templateService);
     TemplateInstanceRepoServerController.injectTemplateInstanceService(templateInstanceService);
     TemplateFieldRepoServerController.injectTemplateFieldService(templateFieldService);
-
   }
 
   public static TemplateElementService<String, JsonNode> getTemplateElementService() {

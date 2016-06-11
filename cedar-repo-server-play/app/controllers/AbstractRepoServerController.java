@@ -1,15 +1,13 @@
 package controllers;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.server.play.AbstractCedarController;
-import play.Configuration;
-import play.Play;
 
 public abstract class AbstractRepoServerController extends AbstractCedarController {
 
-  protected static Configuration config;
+  protected static CedarConfig cedarConfig;
 
   static {
-    config = Play.application().configuration();
+    cedarConfig = CedarConfig.getInstance();
   }
-
 }
