@@ -13,3 +13,7 @@ dist
 /.project
 */RUNNING_PID
 /.settings
+
+pom.xml.releaseBackup
+release.properties
+pom.xml.versionsBackup

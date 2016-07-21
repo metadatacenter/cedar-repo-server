@@ -6,12 +6,11 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-repo-server</artifactId>
-    <version>0.1.0</version>
+    <version>0.5.5-SNAPSHOT</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
   <artifactId>cedar-repo-server-play</artifactId>
-  <version>0.1.0</version>
   <packaging>play2</packaging>
 
   <name>CEDAR Repo Server Play</name>
@@ -20,22 +19,27 @@
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-utils-core</artifactId>
+      <version>${cedar.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-utils-play</artifactId>
+      <version>${cedar.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-template-operations</artifactId>
+      <version>${cedar.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-project-config</artifactId>
+      <version>${cedar.version}</version>
     </dependency>
+
 
     <dependency>
       <groupId>com.typesafe.play</groupId>
