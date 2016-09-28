@@ -1,4 +1,5 @@
 import com.typesafe.config.ConfigFactory;
+import org.metadatacenter.server.security.*;
 import play.Application;
 import play.Configuration;
 import play.GlobalSettings;
@@ -46,7 +47,23 @@ public class Global extends GlobalSettings {
 
   @Override
   public void onStart(Application application) {
+    // init data services
     DataServices.getInstance();
+    // init keycloak deployment
+    KeycloakDeploymentProvider.getInstance();
+    // init authorization resolver
+    IAuthorizationResolver authResolver = null;
+    Configuration config = application.configuration();
+    Boolean noAuth = config.getBoolean("authentication.noAuth");
+    if (noAuth != null && noAuth.booleanValue()) {
+      authResolver = new AuthorizationNoauthResolver();
+    } else {
+      authResolver = new AuthorizationKeycloakAndApiKeyResolver();
+    }
+    Authorization.setUserService(DataServices.getInstance().getUserService());
+    Authorization.setAuthorizationResolver(authResolver);
+
+    // onStart
     super.onStart(application);
   }
 
