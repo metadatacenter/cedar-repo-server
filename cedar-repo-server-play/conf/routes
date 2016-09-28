@@ -6,13 +6,13 @@
 GET            /                              controllers.MainRepoServerController.index()
 
 # Templates
-GET            /templates/:id                 controllers.TemplateRepoServerController.findTemplate(id: String)
+GET            /templates/:id                 controllers.TemplateController.findTemplate(id: String)
 
 # Template Elements
-GET            /template-elements/:id         controllers.TemplateElementRepoServerController.findTemplateElement(id: String)
+GET            /template-elements/:id         controllers.TemplateElementController.findTemplateElement(id: String)
 
 # Template Instances
-GET            /template-instances/:id        controllers.TemplateInstanceRepoServerController.findTemplateInstance(id: String)
+GET            /template-instances/:id        controllers.TemplateInstanceController.findTemplateInstance(id: String)
 
 # For CORS - preflight request
 OPTIONS        /*all                          controllers.MainRepoServerController.preflight(all)

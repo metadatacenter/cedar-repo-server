@@ -1,20 +1,14 @@
 package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.TemplateElementRepoServerController;
-import controllers.TemplateFieldRepoServerController;
-import controllers.TemplateInstanceRepoServerController;
-import controllers.TemplateRepoServerController;
+import controllers.TemplateElementController;
+import controllers.TemplateFieldController;
+import controllers.TemplateInstanceController;
+import controllers.TemplateController;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.server.service.TemplateElementService;
-import org.metadatacenter.server.service.TemplateFieldService;
-import org.metadatacenter.server.service.TemplateInstanceService;
-import org.metadatacenter.server.service.TemplateService;
-import org.metadatacenter.server.service.mongodb.TemplateElementServiceMongoDB;
-import org.metadatacenter.server.service.mongodb.TemplateFieldServiceMongoDB;
-import org.metadatacenter.server.service.mongodb.TemplateInstanceServiceMongoDB;
-import org.metadatacenter.server.service.mongodb.TemplateServiceMongoDB;
+import org.metadatacenter.server.service.*;
+import org.metadatacenter.server.service.mongodb.*;
 
 public class DataServices {
 
@@ -23,6 +17,7 @@ public class DataServices {
   public static TemplateService<String, JsonNode> templateService;
   public static TemplateFieldService<String, JsonNode> templateFieldService;
   public static TemplateInstanceService<String, JsonNode> templateInstanceService;
+  private static UserService userService;
   private static CedarConfig cedarConfig;
 
   public static DataServices getInstance() {
@@ -49,13 +44,20 @@ public class DataServices {
         cedarConfig.getMongoConfig().getDatabaseName(),
         cedarConfig.getMongoCollectionName(CedarNodeType.FIELD));
 
-    TemplateElementRepoServerController.injectTemplateElementService(templateElementService);
-    TemplateRepoServerController.injectTemplateService(templateService);
-    TemplateInstanceRepoServerController.injectTemplateInstanceService(templateInstanceService);
-    TemplateFieldRepoServerController.injectTemplateFieldService(templateFieldService);
+    userService = new UserServiceMongoDB(cedarConfig.getMongoConfig().getDatabaseName(),
+        cedarConfig.getMongoCollectionName(CedarNodeType.USER));
+
+    TemplateElementController.injectTemplateElementService(templateElementService);
+    TemplateController.injectTemplateService(templateService);
+    TemplateInstanceController.injectTemplateInstanceService(templateInstanceService);
+    TemplateFieldController.injectTemplateFieldService(templateFieldService);
   }
 
   public static TemplateElementService<String, JsonNode> getTemplateElementService() {
     return templateElementService;
+  }
+
+  public UserService getUserService() {
+    return userService;
   }
 }

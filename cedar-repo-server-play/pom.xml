@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-repo-server</artifactId>
-    <version>0.8.1</version>
+    <version>0.8.2</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
@@ -14,10 +14,17 @@
   <name>CEDAR Repo Server Play</name>
 
   <properties>
-     <cedar.version>0.8.1</cedar.version>
+     <cedar.version>0.8.2</cedar.version>
   </properties>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-repo-server-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-utils-core</artifactId>
@@ -42,6 +49,23 @@
       <version>${cedar.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-auth-operations-noauth</artifactId>
+      <version>${cedar.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-auth-operations-keycloak</artifactId>
+      <version>${cedar.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-user-operations</artifactId>
+      <version>${cedar.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>com.typesafe.play</groupId>
@@ -81,6 +105,16 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.wordnik</groupId>
+      <artifactId>swagger-play2_${play2.scala.version}</artifactId>
     </dependency>
 
   </dependencies>
