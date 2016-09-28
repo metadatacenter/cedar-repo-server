@@ -14,6 +14,10 @@
 
   <name>CEDAR Repo Server Core</name>
 
+  <properties>
+     <cedar.version>0.8.2-SNAPSHOT</cedar.version>
+  </properties>
+
   <dependencies>
 
     <dependency>
