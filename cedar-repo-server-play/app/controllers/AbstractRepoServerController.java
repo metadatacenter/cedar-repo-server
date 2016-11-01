@@ -11,8 +11,8 @@ public abstract class AbstractRepoServerController extends AbstractCedarControll
 
   protected static final String PREFIX_RESOURCES = "resources";
 
-  protected static CedarConfig cedarConfig;
-  protected final static String folderBase;
+  protected static final CedarConfig cedarConfig;
+  protected static final String folderBase;
 
   static {
     cedarConfig = CedarConfig.getInstance();

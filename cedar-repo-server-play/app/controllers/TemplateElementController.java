@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.rest.exception.CedarAssertionException;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.CedarAuthFromRequestFactory;
 import org.metadatacenter.server.security.exception.CedarAccessException;
@@ -16,7 +17,7 @@ import play.mvc.Result;
 @Api(value = "/template-elements", description = "Template element operations")
 public class TemplateElementController extends AbstractRepoServerController {
 
-  private static TemplateElementService<String, JsonNode> templateElementService;
+    private static TemplateElementService<String, JsonNode> templateElementService;
 
   public static void injectTemplateElementService(TemplateElementService<String, JsonNode> tes) {
     templateElementService = tes;
@@ -25,7 +26,7 @@ public class TemplateElementController extends AbstractRepoServerController {
   @ApiOperation(
       value = "Find template element by id",
       httpMethod = "GET")
-  public static Result findTemplateElement(String id) {
+  public static Result findTemplateElement(String id) throws CedarAssertionException {
     String templateElementId = cedarConfig.getLinkedDataPrefix(CedarNodeType.ELEMENT) + id;
     boolean canProceed = false;
     try {

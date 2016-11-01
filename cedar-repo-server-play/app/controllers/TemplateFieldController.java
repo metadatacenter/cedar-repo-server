@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.rest.exception.CedarAssertionException;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.CedarAuthFromRequestFactory;
 import org.metadatacenter.server.security.exception.CedarAccessException;
@@ -25,7 +26,7 @@ public class TemplateFieldController extends AbstractRepoServerController {
   @ApiOperation(
       value = "Find template field by id",
       httpMethod = "GET")
-  public static Result findTemplateInstance(String id) {
+  public static Result findTemplateInstance(String id) throws CedarAssertionException {
     String templateFieldId = cedarConfig.getLinkedDataPrefix(CedarNodeType.FIELD) + id;
     boolean canProceed = false;
     try {
