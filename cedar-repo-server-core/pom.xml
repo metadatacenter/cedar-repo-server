@@ -14,16 +14,11 @@
 
   <name>CEDAR Repo Server Core</name>
 
-  <properties>
-     <cedar.version>0.8.3-SNAPSHOT</cedar.version>
-  </properties>
-
   <dependencies>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-utils-core</artifactId>
-      <version>${cedar.version}</version>
     </dependency>
 
     <dependency>
