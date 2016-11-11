@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.rest.exception.CedarAssertionException;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.CedarAuthFromRequestFactory;
 import org.metadatacenter.server.security.exception.CedarAccessException;
-import org.metadatacenter.server.security.model.IAuthRequest;
+import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.service.TemplateService;
 import org.metadatacenter.util.json.JsonUtils;
@@ -25,11 +26,11 @@ public class TemplateController extends AbstractRepoServerController {
   @ApiOperation(
       value = "Find template by id",
       httpMethod = "GET")
-  public static Result findTemplate(String id) {
+  public static Result findTemplate(String id) throws CedarAssertionException {
     String templateId = cedarConfig.getLinkedDataPrefix(CedarNodeType.TEMPLATE) + id;
     boolean canProceed = false;
     try {
-      IAuthRequest frontendRequest = CedarAuthFromRequestFactory.fromRequest(request());
+      AuthRequest frontendRequest = CedarAuthFromRequestFactory.fromRequest(request());
       Authorization.getUserAndEnsurePermission(frontendRequest, CedarPermission.TEMPLATE_READ);
       if (userHasReadAccessToResource(folderBase, templateId)) {
         canProceed = true;

@@ -2,7 +2,7 @@ package controllers;
 
 import org.metadatacenter.cedar.resource.util.FolderServerProxy;
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.folderserver.CedarFSResource;
+import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.play.AbstractCedarController;
 import org.metadatacenter.server.security.exception.CedarAccessException;
 import org.metadatacenter.server.security.model.auth.NodePermission;
@@ -11,8 +11,8 @@ public abstract class AbstractRepoServerController extends AbstractCedarControll
 
   protected static final String PREFIX_RESOURCES = "resources";
 
-  protected static CedarConfig cedarConfig;
-  protected final static String folderBase;
+  protected static final CedarConfig cedarConfig;
+  protected static final String folderBase;
 
   static {
     cedarConfig = CedarConfig.getInstance();
@@ -22,7 +22,7 @@ public abstract class AbstractRepoServerController extends AbstractCedarControll
   protected static boolean userHasReadAccessToResource(String folderBase, String
       nodeId) throws CedarAccessException {
     String url = folderBase + PREFIX_RESOURCES;
-    CedarFSResource fsResource = FolderServerProxy.getResource(url, nodeId, request());
+    FolderServerResource fsResource = FolderServerProxy.getResource(url, nodeId, request());
     if (fsResource == null) {
       throw new IllegalArgumentException("Resource not found:" + nodeId);
     }
