@@ -48,6 +48,7 @@
   </build>
   <properties>
     <dropwizard.version>1.0.4</dropwizard.version>
+    <swagger.version>1.5.10</swagger.version>
     <javax.ws.rs-api.version>2.0.1</javax.ws.rs-api.version>
   </properties>
 </project>
