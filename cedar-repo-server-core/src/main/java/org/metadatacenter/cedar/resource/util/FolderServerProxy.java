@@ -11,6 +11,7 @@ import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.util.json.JsonMapper;
 import play.mvc.Http;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class FolderServerProxy {
@@ -44,6 +45,34 @@ public class FolderServerProxy {
   }
 
   public static FolderServerResource getResource(String folderBaseResource, String resourceId, Http.Request request) {
+    if (resourceId != null) {
+      try {
+        String url = folderBaseResource + "/" + new URLCodec().encode(resourceId);
+        System.out.println("FolderServerProxy.getResource:" + url);
+        HttpResponse proxyResponse = ProxyUtil.proxyGet(url, request);
+        int statusCode = proxyResponse.getStatusLine().getStatusCode();
+        HttpEntity entity = proxyResponse.getEntity();
+        System.out.println(statusCode);
+        System.out.println(entity);
+        if (entity != null) {
+          if (HttpStatus.SC_OK == statusCode) {
+            FolderServerResource node = null;
+            String responseString = EntityUtils.toString(proxyResponse.getEntity());
+            node = JsonMapper.MAPPER.readValue(responseString, FolderServerResource.class);
+            return node;
+          }
+        }
+      } catch (EncoderException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
+  }
+
+  public static FolderServerResource getResource(String folderBaseResource, String resourceId, HttpServletRequest
+      request) {
     if (resourceId != null) {
       try {
         String url = folderBaseResource + "/" + new URLCodec().encode(resourceId);

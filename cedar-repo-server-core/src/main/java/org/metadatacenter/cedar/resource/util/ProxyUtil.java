@@ -9,6 +9,7 @@ import org.apache.http.entity.ContentType;
 import org.metadatacenter.server.security.model.AuthRequest;
 import play.mvc.Http;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static org.apache.http.HttpHeaders.*;
@@ -20,6 +21,14 @@ public class ProxyUtil {
   public static final String ZERO_LENGTH = "0";
 
   public static HttpResponse proxyGet(String url, Http.Request request) throws IOException {
+    Request proxyRequest = Request.Get(url)
+        .connectTimeout(CONNECTION_TIMEOUT)
+        .socketTimeout(SOCKET_TIMEOUT);
+    proxyRequest.addHeader(AUTHORIZATION, request.getHeader(AUTHORIZATION));
+    return proxyRequest.execute().returnResponse();
+  }
+
+  public static HttpResponse proxyGet(String url, HttpServletRequest request) throws IOException {
     Request proxyRequest = Request.Get(url)
         .connectTimeout(CONNECTION_TIMEOUT)
         .socketTimeout(SOCKET_TIMEOUT);
