@@ -9,6 +9,8 @@ import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.cedar.repo.core.CedarAssertionExceptionMapper;
 import org.metadatacenter.cedar.repo.health.RepoServerHealthCheck;
 import org.metadatacenter.cedar.repo.resources.IndexResource;
+import org.metadatacenter.cedar.repo.resources.TemplateElementsResource;
+import org.metadatacenter.cedar.repo.resources.TemplateInstancesResource;
 import org.metadatacenter.cedar.repo.resources.TemplatesResource;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
@@ -17,11 +19,9 @@ import org.metadatacenter.server.security.AuthorizationKeycloakAndApiKeyResolver
 import org.metadatacenter.server.security.IAuthorizationResolver;
 import org.metadatacenter.server.security.KeycloakDeploymentProvider;
 import org.metadatacenter.server.service.TemplateElementService;
-import org.metadatacenter.server.service.TemplateFieldService;
 import org.metadatacenter.server.service.TemplateInstanceService;
 import org.metadatacenter.server.service.TemplateService;
 import org.metadatacenter.server.service.mongodb.TemplateElementServiceMongoDB;
-import org.metadatacenter.server.service.mongodb.TemplateFieldServiceMongoDB;
 import org.metadatacenter.server.service.mongodb.TemplateInstanceServiceMongoDB;
 import org.metadatacenter.server.service.mongodb.TemplateServiceMongoDB;
 
@@ -36,7 +36,6 @@ public class RepoServerApplication extends Application<RepoServerConfiguration> 
   protected static CedarConfig cedarConfig;
   protected static TemplateElementService<String, JsonNode> templateElementService;
   protected static TemplateService<String, JsonNode> templateService;
-  protected static TemplateFieldService<String, JsonNode> templateFieldService;
   protected static TemplateInstanceService<String, JsonNode> templateInstanceService;
 
   public static void main(String[] args) throws Exception {
@@ -72,30 +71,30 @@ public class RepoServerApplication extends Application<RepoServerConfiguration> 
         cedarConfig.getMongoConfig().getDatabaseName(),
         cedarConfig.getMongoCollectionName(CedarNodeType.INSTANCE));
 
-    templateFieldService = new TemplateFieldServiceMongoDB(
-        cedarConfig.getMongoConfig().getDatabaseName(),
-        cedarConfig.getMongoCollectionName(CedarNodeType.FIELD));
-
     TemplatesResource.injectTemplateService(templateService);
+    TemplateElementsResource.injectTemplateElementService(templateElementService);
+    TemplateInstancesResource.injectTemplateInstanceService(templateInstanceService);
   }
 
   @Override
   public void run(RepoServerConfiguration configuration, Environment environment) {
+
+    //environment.jersey().register(new ApiListingResource());
+
     final IndexResource index = new IndexResource();
     environment.jersey().register(index);
 
     final TemplatesResource templates = new TemplatesResource();
     environment.jersey().register(templates);
 
-    /*final TemplateElementsResource elements = new TemplateElementsResource();
+    final TemplateElementsResource elements = new TemplateElementsResource();
     environment.jersey().register(elements);
 
     final TemplateInstancesResource instances = new TemplateInstancesResource();
-    environment.jersey().register(instances);*/
+    environment.jersey().register(instances);
 
     final RepoServerHealthCheck healthCheck = new RepoServerHealthCheck();
     environment.healthChecks().register("message", healthCheck);
-
 
     environment.jersey().register(new CedarAssertionExceptionMapper());
 
@@ -110,6 +109,13 @@ public class RepoServerApplication extends Application<RepoServerConfiguration> 
 
     // Add URL mapping
     cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+
+
+    /*BeanConfig config = new BeanConfig();
+    config.setTitle("CEDAR Repo Server");
+    config.setVersion("0.8.7");
+    config.setResourcePackage("org.metadatacenter.cedar.repo");
+    config.setScan(true);*/
 
   }
 }
