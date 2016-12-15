@@ -4,11 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
-import org.metadatacenter.rest.exception.CedarAssertionException;
-import org.metadatacenter.server.security.exception.CedarAccessException;
 import org.metadatacenter.server.service.TemplateElementService;
 import org.metadatacenter.util.json.JsonUtils;
 
@@ -42,8 +41,7 @@ public class TemplateElementsResource extends AbstractRepoResource {
   @GET
   @Timed
   @Path("/{id}")
-  public Response findTemplateElement(@PathParam("id") String id) throws
-      CedarAssertionException {
+  public Response findTemplateElement(@PathParam("id") String id) throws CedarException {
 
     CedarRequestContext c = CedarRequestContextFactory.fromRequest(request);
 
@@ -52,11 +50,7 @@ public class TemplateElementsResource extends AbstractRepoResource {
 
     String templateElementId = cedarConfig.getLinkedDataPrefix(CedarNodeType.ELEMENT) + id;
 
-    try {
-      if (!userHasReadAccessToResource(folderBase, templateElementId, request)) {
-        return Response.status(Response.Status.UNAUTHORIZED).build();
-      }
-    } catch (CedarAccessException e) {
+    if (!userHasReadAccessToResource(folderBase, templateElementId, request)) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 

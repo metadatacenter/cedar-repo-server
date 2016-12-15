@@ -6,12 +6,12 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.metadatacenter.bridge.CedarDataServices;
-import org.metadatacenter.cedar.repo.core.CedarAssertionExceptionMapper;
 import org.metadatacenter.cedar.repo.health.RepoServerHealthCheck;
 import org.metadatacenter.cedar.repo.resources.IndexResource;
 import org.metadatacenter.cedar.repo.resources.TemplateElementsResource;
 import org.metadatacenter.cedar.repo.resources.TemplateInstancesResource;
 import org.metadatacenter.cedar.repo.resources.TemplatesResource;
+import org.metadatacenter.cedar.util.dw.CedarDropwizardApplicationUtil;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.security.Authorization;
@@ -49,12 +49,8 @@ public class RepoServerApplication extends Application<RepoServerConfiguration> 
 
   @Override
   public void initialize(Bootstrap<RepoServerConfiguration> bootstrap) {
-    // Init Keycloak
-    KeycloakDeploymentProvider.getInstance();
-    // Init Authorization Resolver
-    IAuthorizationResolver authResolver = new AuthorizationKeycloakAndApiKeyResolver();
-    Authorization.setAuthorizationResolver(authResolver);
-    Authorization.setUserService(CedarDataServices.getUserService());
+
+    CedarDropwizardApplicationUtil.setupKeycloak();
 
     cedarConfig = CedarConfig.getInstance();
 
@@ -96,20 +92,7 @@ public class RepoServerApplication extends Application<RepoServerConfiguration> 
     final RepoServerHealthCheck healthCheck = new RepoServerHealthCheck();
     environment.healthChecks().register("message", healthCheck);
 
-    environment.jersey().register(new CedarAssertionExceptionMapper());
-
-    // Enable CORS headers
-    final FilterRegistration.Dynamic cors = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
-
-    // Configure CORS parameters
-    cors.setInitParameter(ALLOWED_ORIGINS_PARAM, "*");
-    cors.setInitParameter(ALLOWED_HEADERS_PARAM,
-        "X-Requested-With,Content-Type,Accept,Origin,Referer,User-Agent,Authorization");
-    cors.setInitParameter(ALLOWED_METHODS_PARAM, "OPTIONS,GET,PUT,POST,DELETE,HEAD,PATCH");
-
-    // Add URL mapping
-    cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
-
+    CedarDropwizardApplicationUtil.setupEnvironment(environment);
 
     /*BeanConfig config = new BeanConfig();
     config.setTitle("CEDAR Repo Server");
