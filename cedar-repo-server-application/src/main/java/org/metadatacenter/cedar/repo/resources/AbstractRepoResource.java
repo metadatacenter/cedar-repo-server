@@ -4,6 +4,7 @@ import org.metadatacenter.bridge.FolderServerProxy;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +30,10 @@ public abstract class AbstractRepoResource {
     folderBase = cedarConfig.getServers().getFolder().getBase();
   }
 
-  protected static boolean userHasReadAccessToResource(String folderBase, String nodeId, HttpServletRequest request)
+  protected static boolean userHasReadAccessToResource(String folderBase, String nodeId, CedarRequestContext context)
       throws CedarProcessingException {
     String url = folderBase + PREFIX_RESOURCES;
-    FolderServerResource fsResource = FolderServerProxy.getResource(url, nodeId, request);
+    FolderServerResource fsResource = FolderServerProxy.getResource(url, nodeId, context);
     if (fsResource == null) {
       throw new IllegalArgumentException("Resource not found:" + nodeId);
     }

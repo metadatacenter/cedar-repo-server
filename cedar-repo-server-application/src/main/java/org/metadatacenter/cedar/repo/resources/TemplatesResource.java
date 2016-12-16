@@ -50,7 +50,7 @@ public class TemplatesResource extends AbstractRepoResource {
 
     String templateId = cedarConfig.getLinkedDataPrefix(CedarNodeType.TEMPLATE) + id;
 
-    if (!userHasReadAccessToResource(folderBase, templateId, request)) {
+    if (!userHasReadAccessToResource(folderBase, templateId, c)) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
