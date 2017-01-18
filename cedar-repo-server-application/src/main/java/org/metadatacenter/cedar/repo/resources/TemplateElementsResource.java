@@ -18,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static org.metadatacenter.constant.CedarPathParameters.PP_ID;
 import static org.metadatacenter.rest.assertion.GenericAssertions.LoggedIn;
 import static org.metadatacenter.server.security.model.auth.CedarPermission.TEMPLATE_ELEMENT_READ;
 
@@ -41,7 +42,7 @@ public class TemplateElementsResource extends AbstractRepoResource {
   @GET
   @Timed
   @Path("/{id}")
-  public Response findTemplateElement(@PathParam("id") String id) throws CedarException {
+  public Response findTemplateElement(@PathParam(PP_ID) String id) throws CedarException {
 
     CedarRequestContext c = CedarRequestContextFactory.fromRequest(request);
 
