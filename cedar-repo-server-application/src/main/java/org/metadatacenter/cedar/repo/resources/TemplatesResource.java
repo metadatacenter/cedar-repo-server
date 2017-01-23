@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.rest.context.CedarRequestContext;
@@ -29,7 +30,8 @@ public class TemplatesResource extends AbstractRepoResource {
 
   private static TemplateService<String, JsonNode> templateService;
 
-  public TemplatesResource() {
+  public TemplatesResource(CedarConfig cedarConfig) {
+    super(cedarConfig);
   }
 
   public static void injectTemplateService(TemplateService<String, JsonNode> ts) {

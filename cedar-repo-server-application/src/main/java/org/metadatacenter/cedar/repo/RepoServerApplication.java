@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.cedar.repo.health.RepoServerHealthCheck;
 import org.metadatacenter.cedar.repo.resources.IndexResource;
 import org.metadatacenter.cedar.repo.resources.TemplateElementsResource;
@@ -37,10 +38,10 @@ public class RepoServerApplication extends Application<RepoServerConfiguration> 
 
   @Override
   public void initialize(Bootstrap<RepoServerConfiguration> bootstrap) {
+    cedarConfig = CedarConfig.getInstance();
+    CedarDataServices.getInstance(cedarConfig);
 
     CedarDropwizardApplicationUtil.setupKeycloak();
-
-    cedarConfig = CedarConfig.getInstance();
 
     templateElementService = new TemplateElementServiceMongoDB(
         cedarConfig.getMongoConfig().getDatabaseName(),
@@ -66,13 +67,13 @@ public class RepoServerApplication extends Application<RepoServerConfiguration> 
     final IndexResource index = new IndexResource();
     environment.jersey().register(index);
 
-    final TemplatesResource templates = new TemplatesResource();
+    final TemplatesResource templates = new TemplatesResource(cedarConfig);
     environment.jersey().register(templates);
 
-    final TemplateElementsResource elements = new TemplateElementsResource();
+    final TemplateElementsResource elements = new TemplateElementsResource(cedarConfig);
     environment.jersey().register(elements);
 
-    final TemplateInstancesResource instances = new TemplateInstancesResource();
+    final TemplateInstancesResource instances = new TemplateInstancesResource(cedarConfig);
     environment.jersey().register(instances);
 
     final RepoServerHealthCheck healthCheck = new RepoServerHealthCheck();

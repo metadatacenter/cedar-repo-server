@@ -21,13 +21,13 @@ public abstract class AbstractRepoResource {
   @Context
   HttpServletRequest request;
 
-  protected static final CedarConfig cedarConfig;
-  protected static final String folderBase;
+  protected final CedarConfig cedarConfig;
+  protected final String folderBase;
   protected static final String PREFIX_RESOURCES = "resources";
 
-  static {
-    cedarConfig = CedarConfig.getInstance();
-    folderBase = cedarConfig.getServers().getFolder().getBase();
+  public AbstractRepoResource(CedarConfig cedarConfig) {
+    this.cedarConfig = cedarConfig;
+    this.folderBase = cedarConfig.getServers().getFolder().getBase();
   }
 
   protected static boolean userHasReadAccessToResource(String folderBase, String nodeId, CedarRequestContext context)
