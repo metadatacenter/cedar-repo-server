@@ -66,8 +66,6 @@ public class TemplateInstancesResource extends AbstractRepoResource {
         return Response.ok().entity(templateInstance).build();
       }
       return CedarResponse.notFound().build();
-    } catch (IllegalArgumentException e) {
-      return CedarResponse.badRequest().entity(e).build();
     } catch (Exception e) {
       return CedarResponse.internalServerError().entity(e).build();
     }
