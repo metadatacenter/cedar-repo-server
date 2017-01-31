@@ -10,6 +10,7 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.service.TemplateElementService;
+import org.metadatacenter.util.http.CedarResponse;
 import org.metadatacenter.util.json.JsonUtils;
 
 import javax.ws.rs.GET;
@@ -54,7 +55,7 @@ public class TemplateElementsResource extends AbstractRepoResource {
     String templateElementId = cedarConfig.getLinkedDataPrefix(CedarNodeType.ELEMENT) + id;
 
     if (!userHasReadAccessToResource(folderBase, templateElementId, c)) {
-      return Response.status(Response.Status.UNAUTHORIZED).build();
+      return CedarResponse.unauthorized().build();
     }
 
     try {
@@ -64,11 +65,9 @@ public class TemplateElementsResource extends AbstractRepoResource {
         templateElement = JsonUtils.removeField(templateElement, "_id");
         return Response.ok().entity(templateElement).build();
       }
-      return Response.status(Response.Status.NOT_FOUND).build();
-    } catch (IllegalArgumentException e) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
+      return CedarResponse.notFound().id(id).build();
     } catch (Exception e) {
-      return Response.serverError().entity(e).build();
+      return CedarResponse.internalServerError().exception(e).build();
     }
   }
 
