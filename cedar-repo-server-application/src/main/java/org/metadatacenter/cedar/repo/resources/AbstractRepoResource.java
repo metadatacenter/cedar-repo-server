@@ -5,6 +5,7 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.context.CedarRequestContext;
+import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,11 +23,13 @@ public abstract class AbstractRepoResource {
   HttpServletRequest request;
 
   protected final CedarConfig cedarConfig;
+  protected final LinkedDataUtil linkedDataUtil;
   protected final String folderBase;
   protected static final String PREFIX_RESOURCES = "resources";
 
   public AbstractRepoResource(CedarConfig cedarConfig) {
     this.cedarConfig = cedarConfig;
+    this.linkedDataUtil = cedarConfig.buildLinkedDataUtil();
     this.folderBase = cedarConfig.getServers().getFolder().getBase();
   }
 

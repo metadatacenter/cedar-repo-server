@@ -52,7 +52,7 @@ public class TemplateElementsResource extends AbstractRepoResource {
     c.must(c.user()).be(LoggedIn);
     c.must(c.user()).have(TEMPLATE_ELEMENT_READ);
 
-    String templateElementId = cedarConfig.getLinkedDataPrefix(CedarNodeType.ELEMENT) + id;
+    String templateElementId = linkedDataUtil.getLinkedDataId(CedarNodeType.ELEMENT, id);
 
     if (!userHasReadAccessToResource(folderBase, templateElementId, c)) {
       return CedarResponse.unauthorized().build();
