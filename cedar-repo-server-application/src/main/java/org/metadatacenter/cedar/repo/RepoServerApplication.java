@@ -1,17 +1,14 @@
 package org.metadatacenter.cedar.repo;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.cedar.repo.health.RepoServerHealthCheck;
 import org.metadatacenter.cedar.repo.resources.IndexResource;
 import org.metadatacenter.cedar.repo.resources.TemplateElementsResource;
 import org.metadatacenter.cedar.repo.resources.TemplateInstancesResource;
 import org.metadatacenter.cedar.repo.resources.TemplatesResource;
-import org.metadatacenter.cedar.util.dw.CedarDropwizardApplicationUtil;
-import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.cedar.util.dw.CedarMicroserviceApplication;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.service.TemplateElementService;
 import org.metadatacenter.server.service.TemplateInstanceService;
@@ -20,9 +17,8 @@ import org.metadatacenter.server.service.mongodb.TemplateElementServiceMongoDB;
 import org.metadatacenter.server.service.mongodb.TemplateInstanceServiceMongoDB;
 import org.metadatacenter.server.service.mongodb.TemplateServiceMongoDB;
 
-public class RepoServerApplication extends Application<RepoServerConfiguration> {
+public class RepoServerApplication extends CedarMicroserviceApplication<RepoServerConfiguration> {
 
-  protected static CedarConfig cedarConfig;
   protected static TemplateElementService<String, JsonNode> templateElementService;
   protected static TemplateService<String, JsonNode> templateService;
   protected static TemplateInstanceService<String, JsonNode> templateInstanceService;
@@ -33,16 +29,11 @@ public class RepoServerApplication extends Application<RepoServerConfiguration> 
 
   @Override
   public String getName() {
-    return "repo-server";
+    return "cedar-repo-server";
   }
 
   @Override
-  public void initialize(Bootstrap<RepoServerConfiguration> bootstrap) {
-    cedarConfig = CedarConfig.getInstance();
-    CedarDataServices.getInstance(cedarConfig);
-
-    CedarDropwizardApplicationUtil.setupKeycloak();
-
+  public void initializeApp(Bootstrap<RepoServerConfiguration> bootstrap) {
     templateElementService = new TemplateElementServiceMongoDB(
         cedarConfig.getMongoConfig().getDatabaseName(),
         cedarConfig.getMongoCollectionName(CedarNodeType.ELEMENT));
@@ -62,7 +53,7 @@ public class RepoServerApplication extends Application<RepoServerConfiguration> 
   }
 
   @Override
-  public void run(RepoServerConfiguration configuration, Environment environment) {
+  public void runApp(RepoServerConfiguration configuration, Environment environment) {
 
     final IndexResource index = new IndexResource();
     environment.jersey().register(index);
@@ -78,8 +69,5 @@ public class RepoServerApplication extends Application<RepoServerConfiguration> 
 
     final RepoServerHealthCheck healthCheck = new RepoServerHealthCheck();
     environment.healthChecks().register("message", healthCheck);
-
-    CedarDropwizardApplicationUtil.setupEnvironment(environment);
-
   }
 }
