@@ -67,7 +67,7 @@ public class TemplatesResource extends AbstractRepoResource {
       }
       return CedarResponse.notFound().build();
     } catch (Exception e) {
-      return CedarResponse.internalServerError().entity(e).build();
+      return CedarResponse.internalServerError().exception(e).build();
     }
   }
 
