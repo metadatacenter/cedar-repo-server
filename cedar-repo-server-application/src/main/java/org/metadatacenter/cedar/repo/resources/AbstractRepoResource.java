@@ -17,7 +17,7 @@ public abstract class AbstractRepoResource extends CedarMicroserviceResource {
 
   public AbstractRepoResource(CedarConfig cedarConfig) {
     super(cedarConfig);
-    this.linkedDataUtil = cedarConfig.buildLinkedDataUtil();
+    this.linkedDataUtil = cedarConfig.getLinkedDataUtil();
     this.folderBase = cedarConfig.getServers().getFolder().getBase();
   }
 
