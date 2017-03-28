@@ -1,6 +1,5 @@
 sudo: required
 dist: trusty
-
 language: java
 jdk:
 - oraclejdk8
@@ -9,13 +8,14 @@ branches:
   - develop
   - master
 notifications:
-  email:
-    recipients:
-    - cedar-core-developers@lists.stanford.edu
-    on_success: never
+  slack:
+    on_success: change
     on_failure: always
-install: '[ ${TRAVIS_PULL_REQUEST} = ''false'' ] && mvn -DskipTests=false clean deploy --settings .m2/travis-settings.xml'
-script: '[ ${TRAVIS_PULL_REQUEST} = ''false'' ] && mvn -DskipTests=true clean --settings .m2/travis-settings.xml'
+    secure: QFjS+JnHIoDnckrYOXG3QJ6YO03ciZFWk4hrPuLj4/jvz0eTisw81pOPVTu7TpgNOg/iysNCYoPf46Zf+briDEUJR5nJ5+6FUKMB98LjPJewl+2hfQH6pCuU15TF/OuBZ2n8a82TQRM8EFXzomH+oH/ZztTd/JnMdpQpIUcHVqc3ccjMQ/MO7AXF92qi8T3soI/ycX2adBxzSBm171Zt0vjo7DbNy5ScrkVnnF/pTNVgwrcgeXHSoemBeyZxU1j41ZHuREATwCJ7bbtXfLJByGPKfOHBn2+Vg+uiYAofgmz/xgAG+wnxgnTPZxX9K9kz6yi40uHOSHlQPjrJToxsE2NmAEM6jj7QkuYp8fg23tqSot36RHDCQ2yZ4LXgZQbFa82UxeKgjDdkQLmQFwy57bXvG51CKt/QQPHAeTv2PHqJzaOiA1/QPr3srIx0Emnbz+vutt89lC52SDeW41bQqQqgsN6rfwio3gQ9D4F395cbB2byRr0p8jxYzfOiNQMFcdFskedvWez0FTCp7pdVVfEpf02XGTQGyfST3L4PIHC2obRY51k0LEPyZ5ad0lBLtfJFdVyTiNoJHPrW5GuEyWDH26v+idE94Noy+WhTzymTivLFuqhWMBAqfASffARbEmf1edmBtAI4QGaktV2PDgPTE2AjvdDbTXDOn0KWM1I=
+install: '[ ${TRAVIS_PULL_REQUEST} = ''false'' ] && mvn -DskipTests=false clean deploy
+  --settings .m2/travis-settings.xml'
+script: '[ ${TRAVIS_PULL_REQUEST} = ''false'' ] && mvn -DskipTests=true clean --settings
+  .m2/travis-settings.xml'
 env:
   global:
   - secure: VY75RBRihpTX2ShZ7X+oW5rt37FK2TB0dmIjrPy914dx4m30Bq+QSx5p9F65rfsWyta1KkBGC6af6/MUS0tELMqmZl2vgRVJANMCmcdafY9/3nOiY1w6kEDEjN0Nih2/PfPW82wq/asUKk7jiZT2qJjEvQT6ZAQMQCb20V4PBn1zrqxIw5WinYbrMX59gcW8H3paJhwkMDhLL2lAtAWNWLIKB934hIKrE2NcizPbLKsPvtIwWYnFJ9PsAU2UNQA5ZQnHh+7ZwnCdPM/xCkdWsnMkF0wrgSsrvOQwzaeOo1RPCwst04CHIrlpIPwb9XB/RfxOnmKB2MVBBhXJ4621ZEhxKNBA+09b6uVREBuYKjuwiSdH7eH5MtwSsLGeDe9OWnt3SLELnKAi/bVl80bM3LFl5m9wwY+MXBo5DJ5vlY911QCIqps+HwVOQhpTNbj8KFl/QAd8zQgcn5Ux1DjMUC38DCJP7hAGOf5R+K2jEoBXIxLeWY0urtiy8smaGGXjkqBttu6eJmQjnsePQJdr703I7K6bYcWiZOg2aBRXwCcJqCdMyKHAFK8JG86tLrPlZna1Vpl3kVp9T3BdvOs7vJ/P3kJkq3wWsBJJvyeCwNEY9UwjTz2DnUPIWMk0GT8eboO95kJ4beLR7TZSaWDKpVKjkjPGhnTe9bmZCayEPH4=

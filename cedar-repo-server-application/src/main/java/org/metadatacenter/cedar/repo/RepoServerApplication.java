@@ -1,8 +1,10 @@
 package org.metadatacenter.cedar.repo;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mongodb.MongoClient;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.cedar.repo.health.RepoServerHealthCheck;
 import org.metadatacenter.cedar.repo.resources.IndexResource;
 import org.metadatacenter.cedar.repo.resources.TemplateElementsResource;
@@ -34,17 +36,22 @@ public class RepoServerApplication extends CedarMicroserviceApplication<RepoServ
 
   @Override
   public void initializeApp(Bootstrap<RepoServerConfiguration> bootstrap) {
+    CedarDataServices.initializeMongoClientFactoryForDocuments(
+        cedarConfig.getTemplateServerConfig().getMongoConnection());
+    MongoClient mongoClientForDocuments = CedarDataServices.getMongoClientFactoryForDocuments().getClient();
     templateElementService = new TemplateElementServiceMongoDB(
-        cedarConfig.getMongoConfig().getDatabaseName(),
+        mongoClientForDocuments,
+        cedarConfig.getTemplateServerConfig().getDatabaseName(),
         cedarConfig.getMongoCollectionName(CedarNodeType.ELEMENT));
 
     templateService = new TemplateServiceMongoDB(
-        cedarConfig.getMongoConfig().getDatabaseName(),
-        cedarConfig.getMongoCollectionName(CedarNodeType.TEMPLATE),
-        templateElementService);
+        mongoClientForDocuments,
+        cedarConfig.getTemplateServerConfig().getDatabaseName(),
+        cedarConfig.getMongoCollectionName(CedarNodeType.TEMPLATE));
 
     templateInstanceService = new TemplateInstanceServiceMongoDB(
-        cedarConfig.getMongoConfig().getDatabaseName(),
+        mongoClientForDocuments,
+        cedarConfig.getTemplateServerConfig().getDatabaseName(),
         cedarConfig.getMongoCollectionName(CedarNodeType.INSTANCE));
 
     TemplatesResource.injectTemplateService(templateService);
