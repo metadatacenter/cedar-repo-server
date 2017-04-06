@@ -11,6 +11,7 @@ import org.metadatacenter.cedar.repo.resources.TemplateElementsResource;
 import org.metadatacenter.cedar.repo.resources.TemplateInstancesResource;
 import org.metadatacenter.cedar.repo.resources.TemplatesResource;
 import org.metadatacenter.cedar.util.dw.CedarMicroserviceApplication;
+import org.metadatacenter.model.ServerName;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.service.TemplateElementService;
 import org.metadatacenter.server.service.TemplateInstanceService;
@@ -30,8 +31,8 @@ public class RepoServerApplication extends CedarMicroserviceApplication<RepoServ
   }
 
   @Override
-  public String getName() {
-    return "cedar-repo-server";
+  protected ServerName getServerName() {
+    return ServerName.REPO;
   }
 
   @Override
