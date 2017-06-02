@@ -22,8 +22,12 @@ public class CedarConfigRepoTest {
 
     env.put(CedarEnvironmentVariable.CEDAR_KEYCLOAK_CLIENT_ID.getName(), "cedar-angular-app");
 
-    env.put(CedarEnvironmentVariable.CEDAR_MONGO_USER_NAME.getName(), "cedarUser");
-    env.put(CedarEnvironmentVariable.CEDAR_MONGO_USER_PASSWORD.getName(), "password");
+    env.put(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_NAME.getName(), "cedarUser");
+    env.put(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_PASSWORD.getName(), "password");
+    env.put(CedarEnvironmentVariable.CEDAR_MONGO_HOST.getName(), "localhost");
+    env.put(CedarEnvironmentVariable.CEDAR_MONGO_PORT.getName(), "27017");
+
+    env.put(CedarEnvironmentVariable.CEDAR_PORT_REPO.getName(), "9002");
 
     env.put(CedarEnvironmentVariable.CEDAR_LD_USER_BASE.getName(), "https://metadatacenter.org/users/");
 
