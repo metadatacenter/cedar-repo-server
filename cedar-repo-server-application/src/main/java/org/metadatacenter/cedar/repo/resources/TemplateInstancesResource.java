@@ -2,8 +2,6 @@ package org.metadatacenter.cedar.repo.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.JsonNode;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.model.CedarNodeType;
@@ -24,7 +22,6 @@ import static org.metadatacenter.constant.CedarPathParameters.PP_ID;
 import static org.metadatacenter.rest.assertion.GenericAssertions.LoggedIn;
 import static org.metadatacenter.server.security.model.auth.CedarPermission.TEMPLATE_INSTANCE_READ;
 
-@Api(value = "/template-instances", description = "Template instance operations")
 @Path("/template-instances")
 @Produces(MediaType.APPLICATION_JSON)
 public class TemplateInstancesResource extends AbstractRepoResource {
@@ -39,9 +36,6 @@ public class TemplateInstancesResource extends AbstractRepoResource {
     templateInstanceService = tis;
   }
 
-  @ApiOperation(
-      value = "Find template instance by id",
-      httpMethod = "GET")
   @GET
   @Timed
   @Path("/{id}")
@@ -54,7 +48,7 @@ public class TemplateInstancesResource extends AbstractRepoResource {
 
     String templateInstanceId = linkedDataUtil.getLinkedDataId(CedarNodeType.INSTANCE, id);
 
-    if (!userHasReadAccessToResource(folderBase, templateInstanceId, c)) {
+    if (!userHasReadAccessToResource(microserviceUrlUtil, templateInstanceId, c)) {
       return CedarResponse.unauthorized().build();
     }
 
