@@ -2,6 +2,7 @@ package org.metadatacenter.cedar.repo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.MongoClient;
+import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.cedar.repo.health.RepoServerHealthCheck;
@@ -33,6 +34,10 @@ public class RepoServerApplication extends CedarMicroserviceApplication<RepoServ
   @Override
   protected ServerName getServerName() {
     return ServerName.REPO;
+  }
+
+  @Override
+  protected void initializeWithBootstrap(Bootstrap<RepoServerConfiguration> bootstrap) {
   }
 
   @Override
