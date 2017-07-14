@@ -37,7 +37,7 @@ public class RepoServerApplication extends CedarMicroserviceApplication<RepoServ
   }
 
   @Override
-  protected void initializeWithBootsrap(Bootstrap<RepoServerConfiguration> bootstrap) {
+  protected void initializeWithBootstrap(Bootstrap<RepoServerConfiguration> bootstrap) {
   }
 
   @Override
