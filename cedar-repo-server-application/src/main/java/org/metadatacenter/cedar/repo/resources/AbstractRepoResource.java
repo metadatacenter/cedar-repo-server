@@ -12,13 +12,8 @@ import org.metadatacenter.server.url.MicroserviceUrlUtil;
 
 public abstract class AbstractRepoResource extends CedarMicroserviceResource {
 
-  protected final LinkedDataUtil linkedDataUtil;
-  protected final MicroserviceUrlUtil microserviceUrlUtil;
-
   public AbstractRepoResource(CedarConfig cedarConfig) {
     super(cedarConfig);
-    linkedDataUtil = cedarConfig.getLinkedDataUtil();
-    microserviceUrlUtil = cedarConfig.getMicroserviceUrlUtil();
   }
 
   protected static boolean userHasReadAccessToResource(MicroserviceUrlUtil microserviceUrlUtil, String nodeId,
