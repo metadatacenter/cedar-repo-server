@@ -11,6 +11,7 @@ import org.metadatacenter.cedar.repo.resources.TemplateElementsResource;
 import org.metadatacenter.cedar.repo.resources.TemplateInstancesResource;
 import org.metadatacenter.cedar.repo.resources.TemplatesResource;
 import org.metadatacenter.cedar.util.dw.CedarMicroserviceApplication;
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.MongoConfig;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ServerName;
@@ -37,7 +38,7 @@ public class RepoServerApplication extends CedarMicroserviceApplication<RepoServ
   }
 
   @Override
-  protected void initializeWithBootstrap(Bootstrap<RepoServerConfiguration> bootstrap) {
+  protected void initializeWithBootstrap(Bootstrap<RepoServerConfiguration> bootstrap, CedarConfig cedarConfig) {
   }
 
   @Override
