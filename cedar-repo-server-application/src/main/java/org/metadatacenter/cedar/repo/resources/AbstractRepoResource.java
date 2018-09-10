@@ -15,14 +15,14 @@ public abstract class AbstractRepoResource extends CedarMicroserviceResource {
     super(cedarConfig);
   }
 
-  protected static boolean userHasReadAccessToResource(MicroserviceUrlUtil microserviceUrlUtil, String nodeId,
-                                                       CedarRequestContext context) throws CedarProcessingException {
+  protected static boolean userHasNoReadAccessToResource(MicroserviceUrlUtil microserviceUrlUtil, String nodeId,
+                                                         CedarRequestContext context) throws CedarProcessingException {
     String url = microserviceUrlUtil.getWorkspace().getResources();
     FolderServerResource fsResource = FolderServerProxy.getResource(url, nodeId, context);
     if (fsResource == null) {
       throw new IllegalArgumentException("Resource not found:" + nodeId);
     }
-    return fsResource.currentUserCan(NodePermission.READ);
+    return !fsResource.currentUserCan(NodePermission.READ);
   }
 
 }
