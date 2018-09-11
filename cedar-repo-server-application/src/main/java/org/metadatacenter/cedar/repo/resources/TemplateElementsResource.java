@@ -48,7 +48,7 @@ public class TemplateElementsResource extends AbstractRepoResource {
 
     String templateElementId = linkedDataUtil.getLinkedDataId(CedarNodeType.ELEMENT, id);
 
-    if (!userHasReadAccessToResource(microserviceUrlUtil, templateElementId, c)) {
+    if (userHasNoReadAccessToResource(microserviceUrlUtil, templateElementId, c)) {
       return CedarResponse.unauthorized().build();
     }
 
