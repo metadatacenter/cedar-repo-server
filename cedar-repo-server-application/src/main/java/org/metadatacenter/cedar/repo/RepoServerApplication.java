@@ -6,10 +6,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.cedar.repo.health.RepoServerHealthCheck;
-import org.metadatacenter.cedar.repo.resources.IndexResource;
-import org.metadatacenter.cedar.repo.resources.TemplateElementsResource;
-import org.metadatacenter.cedar.repo.resources.TemplateInstancesResource;
-import org.metadatacenter.cedar.repo.resources.TemplatesResource;
+import org.metadatacenter.cedar.repo.resources.*;
 import org.metadatacenter.cedar.util.dw.CedarMicroserviceApplication;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.MongoConfig;
@@ -75,6 +72,9 @@ public class RepoServerApplication extends CedarMicroserviceApplication<RepoServ
 
     final TemplatesResource templates = new TemplatesResource(cedarConfig);
     environment.jersey().register(templates);
+
+    final TemplateFieldsResource fields = new TemplateFieldsResource(cedarConfig);
+    environment.jersey().register(fields);
 
     final TemplateElementsResource elements = new TemplateElementsResource(cedarConfig);
     environment.jersey().register(elements);
