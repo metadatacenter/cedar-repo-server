@@ -6,7 +6,6 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.service.TemplateFieldService;
 import org.metadatacenter.util.http.CedarResponse;
 import org.metadatacenter.util.json.JsonUtils;
@@ -20,7 +19,6 @@ import javax.ws.rs.core.Response;
 
 import static org.metadatacenter.constant.CedarPathParameters.PP_ID;
 import static org.metadatacenter.rest.assertion.GenericAssertions.LoggedIn;
-import static org.metadatacenter.server.security.model.auth.CedarPermission.TEMPLATE_ELEMENT_READ;
 import static org.metadatacenter.server.security.model.auth.CedarPermission.TEMPLATE_FIELD_READ;
 
 @Path("/template-fields")
@@ -42,7 +40,7 @@ public class TemplateFieldsResource extends AbstractRepoResource {
   @Path("/{id}")
   public Response findTemplateField(@PathParam(PP_ID) String id) throws CedarException {
 
-    CedarRequestContext c = CedarRequestContextFactory.fromRequest(request);
+    CedarRequestContext c = buildRequestContext();
 
     c.must(c.user()).be(LoggedIn);
     c.must(c.user()).have(TEMPLATE_FIELD_READ);

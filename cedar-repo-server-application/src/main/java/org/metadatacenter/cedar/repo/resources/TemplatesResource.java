@@ -41,7 +41,7 @@ public class TemplatesResource extends AbstractRepoResource {
   @Path("/{id}")
   public Response findTemplate(@PathParam(PP_ID) String id) throws CedarException {
 
-    CedarRequestContext c = CedarRequestContextFactory.fromRequest(request);
+    CedarRequestContext c = buildRequestContext();
 
     c.must(c.user()).be(LoggedIn);
     c.must(c.user()).have(TEMPLATE_READ);
