@@ -6,7 +6,6 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.service.TemplateService;
 import org.metadatacenter.util.http.CedarResponse;
 import org.metadatacenter.util.json.JsonUtils;
@@ -28,12 +27,9 @@ public class TemplatesResource extends AbstractRepoResource {
 
   private static TemplateService<String, JsonNode> templateService;
 
-  public TemplatesResource(CedarConfig cedarConfig) {
+  public TemplatesResource(CedarConfig cedarConfig, TemplateService<String, JsonNode> templateService) {
     super(cedarConfig);
-  }
-
-  public static void injectTemplateService(TemplateService<String, JsonNode> ts) {
-    templateService = ts;
+    TemplatesResource.templateService = templateService;
   }
 
   @GET
