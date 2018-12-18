@@ -27,12 +27,10 @@ public class TemplateElementsResource extends AbstractRepoResource {
 
   private static TemplateElementService<String, JsonNode> templateElementService;
 
-  public TemplateElementsResource(CedarConfig cedarConfig) {
+  public TemplateElementsResource(CedarConfig cedarConfig,
+                                  TemplateElementService<String, JsonNode> templateElementService) {
     super(cedarConfig);
-  }
-
-  public static void injectTemplateElementService(TemplateElementService<String, JsonNode> tes) {
-    templateElementService = tes;
+    TemplateElementsResource.templateElementService = templateElementService;
   }
 
   @GET
