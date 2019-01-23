@@ -27,12 +27,9 @@ public class TemplateFieldsResource extends AbstractRepoResource {
 
   private static TemplateFieldService<String, JsonNode> templateFieldService;
 
-  public TemplateFieldsResource(CedarConfig cedarConfig) {
+  public TemplateFieldsResource(CedarConfig cedarConfig, TemplateFieldService<String, JsonNode> templateFieldService) {
     super(cedarConfig);
-  }
-
-  public static void injectTemplateFieldService(TemplateFieldService<String, JsonNode> tfs) {
-    templateFieldService = tfs;
+    TemplateFieldsResource.templateFieldService = templateFieldService;
   }
 
   @GET

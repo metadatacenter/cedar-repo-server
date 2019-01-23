@@ -27,12 +27,10 @@ public class TemplateInstancesResource extends AbstractRepoResource {
 
   private static TemplateInstanceService<String, JsonNode> templateInstanceService;
 
-  public TemplateInstancesResource(CedarConfig cedarConfig) {
+  public TemplateInstancesResource(CedarConfig cedarConfig,
+                                   TemplateInstanceService<String, JsonNode> templateInstanceService) {
     super(cedarConfig);
-  }
-
-  public static void injectTemplateInstanceService(TemplateInstanceService<String, JsonNode> tis) {
-    templateInstanceService = tis;
+    TemplateInstancesResource.templateInstanceService = templateInstanceService;
   }
 
   @GET
