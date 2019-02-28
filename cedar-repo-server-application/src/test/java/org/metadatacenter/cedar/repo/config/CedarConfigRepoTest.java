@@ -34,7 +34,6 @@ public class CedarConfigRepoTest {
     env.put(CedarEnvironmentVariable.CEDAR_REPO_ADMIN_PORT.getName(), "9102");
     env.put(CedarEnvironmentVariable.CEDAR_REPO_STOP_PORT.getName(), "9202");
 
-    env.put(CedarEnvironmentVariable.CEDAR_WORKSPACE_HTTP_PORT.getName(), "9008");
     env.put(CedarEnvironmentVariable.CEDAR_USER_HTTP_PORT.getName(), "9005");
 
     TestUtil.setEnv(env);
