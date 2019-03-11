@@ -1,12 +1,14 @@
 package org.metadatacenter.cedar.repo.resources;
 
-import org.metadatacenter.bridge.FolderServerProxy;
+import org.metadatacenter.bridge.CedarDataServices;
+import org.metadatacenter.bridge.GraphDbPermissionReader;
 import org.metadatacenter.cedar.util.dw.CedarMicroserviceResource;
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerResourceCurrentUserReport;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.server.url.MicroserviceUrlUtil;
+import org.metadatacenter.server.FolderServiceSession;
+import org.metadatacenter.server.PermissionServiceSession;
 
 public abstract class AbstractRepoResource extends CedarMicroserviceResource {
 
@@ -14,11 +16,12 @@ public abstract class AbstractRepoResource extends CedarMicroserviceResource {
     super(cedarConfig);
   }
 
-  protected static boolean userHasNoReadAccessToResource(MicroserviceUrlUtil microserviceUrlUtil, String nodeId,
-                                                         CedarRequestContext context) throws CedarProcessingException {
-    String url = microserviceUrlUtil.getWorkspace().getResources();
+  protected boolean userHasNoReadAccessToResource(CedarRequestContext context, String nodeId) throws CedarException {
+    FolderServiceSession folderSession = CedarDataServices.getFolderServiceSession(context);
+    PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(context);
     FolderServerResourceCurrentUserReport
-        resourceCurrentUserReport = FolderServerProxy.getResourceCurrentUserReport(url, nodeId, context);
+        resourceCurrentUserReport = GraphDbPermissionReader
+        .getResourceCurrentUserReport(context, folderSession, permissionSession, cedarConfig, nodeId);
     if (resourceCurrentUserReport == null) {
       throw new IllegalArgumentException("Resource not found:" + nodeId);
     }
