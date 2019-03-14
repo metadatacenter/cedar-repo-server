@@ -29,12 +29,12 @@ public class RepoServerApplication extends CedarMicroserviceApplicationWithMongo
   @Override
   public void initializeApp() {
     CedarDataServices.initializeNeo4jServices(cedarConfig);
-    MongoConfig templateServerConfig = cedarConfig.getTemplateServerConfig();
-    CedarDataServices.initializeMongoClientFactoryForDocuments(templateServerConfig.getMongoConnection());
+    MongoConfig artifactServerConfig = cedarConfig.getArtifactServerConfig();
+    CedarDataServices.initializeMongoClientFactoryForDocuments(artifactServerConfig.getMongoConnection());
 
     MongoClient mongoClientForDocuments = CedarDataServices.getMongoClientFactoryForDocuments().getClient();
 
-    initMongoServices(mongoClientForDocuments, templateServerConfig);
+    initMongoServices(mongoClientForDocuments, artifactServerConfig);
   }
 
   @Override
