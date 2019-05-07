@@ -5,7 +5,7 @@ import org.metadatacenter.bridge.GraphDbPermissionReader;
 import org.metadatacenter.cedar.util.dw.CedarMicroserviceResource;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
-import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerResourceCurrentUserReport;
+import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerArtifactCurrentUserReport;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
@@ -19,7 +19,7 @@ public abstract class AbstractRepoResource extends CedarMicroserviceResource {
   protected boolean userHasNoReadAccessToResource(CedarRequestContext context, String nodeId) throws CedarException {
     FolderServiceSession folderSession = CedarDataServices.getFolderServiceSession(context);
     PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(context);
-    FolderServerResourceCurrentUserReport
+    FolderServerArtifactCurrentUserReport
         resourceCurrentUserReport = GraphDbPermissionReader
         .getResourceCurrentUserReport(context, folderSession, permissionSession, cedarConfig, nodeId);
     if (resourceCurrentUserReport == null) {
