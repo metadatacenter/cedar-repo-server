@@ -21,7 +21,7 @@ public abstract class AbstractRepoResource extends CedarMicroserviceResource {
     PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(context);
     FolderServerArtifactCurrentUserReport
         resourceCurrentUserReport = GraphDbPermissionReader
-        .getResourceCurrentUserReport(context, folderSession, permissionSession, cedarConfig, nodeId);
+        .getArtifactCurrentUserReport(context, folderSession, permissionSession, cedarConfig, nodeId);
     if (resourceCurrentUserReport == null) {
       throw new IllegalArgumentException("Resource not found:" + nodeId);
     }
