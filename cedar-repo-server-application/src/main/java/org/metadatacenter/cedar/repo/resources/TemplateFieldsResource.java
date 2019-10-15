@@ -4,6 +4,8 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
+import org.metadatacenter.id.CedarFieldId;
+import org.metadatacenter.id.CedarTemplateInstanceId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.service.TemplateFieldService;
@@ -43,8 +45,9 @@ public class TemplateFieldsResource extends AbstractRepoResource {
     c.must(c.user()).have(TEMPLATE_FIELD_READ);
 
     String templateFieldId = linkedDataUtil.getLinkedDataId(CedarResourceType.FIELD, id);
+    CedarFieldId fid = CedarFieldId.buildSafe(templateFieldId);
 
-    if (userHasNoReadAccessToResource(c, templateFieldId)) {
+    if (userHasNoReadAccessToArtifact(c, fid)) {
       return CedarResponse.unauthorized().build();
     }
 
