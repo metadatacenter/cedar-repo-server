@@ -45,7 +45,7 @@ public class TemplateFieldsResource extends AbstractRepoResource {
     c.must(c.user()).have(TEMPLATE_FIELD_READ);
 
     String templateFieldId = linkedDataUtil.getLinkedDataId(CedarResourceType.FIELD, id);
-    CedarFieldId fid = CedarFieldId.buildSafe(templateFieldId);
+    CedarFieldId fid = CedarFieldId.build(templateFieldId);
 
     if (userHasNoReadAccessToArtifact(c, fid)) {
       return CedarResponse.unauthorized().build();

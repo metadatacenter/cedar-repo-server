@@ -44,7 +44,7 @@ public class TemplateElementsResource extends AbstractRepoResource {
     c.must(c.user()).have(TEMPLATE_ELEMENT_READ);
 
     String templateElementId = linkedDataUtil.getLinkedDataId(CedarResourceType.ELEMENT, id);
-    CedarElementId eid = CedarElementId.buildSafe(templateElementId);
+    CedarElementId eid = CedarElementId.build(templateElementId);
 
     if (userHasNoReadAccessToArtifact(c, eid)) {
       return CedarResponse.unauthorized().build();
