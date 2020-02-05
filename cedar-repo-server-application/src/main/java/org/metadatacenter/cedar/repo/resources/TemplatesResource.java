@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
+import org.metadatacenter.id.CedarTemplateId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.service.TemplateService;
@@ -43,8 +44,9 @@ public class TemplatesResource extends AbstractRepoResource {
     c.must(c.user()).have(TEMPLATE_READ);
 
     String templateId = linkedDataUtil.getLinkedDataId(CedarResourceType.TEMPLATE, id);
+    CedarTemplateId tid = CedarTemplateId.build(templateId);
 
-    if (userHasNoReadAccessToResource(c, templateId)) {
+    if (userHasNoReadAccessToArtifact(c, tid)) {
       return CedarResponse.unauthorized().build();
     }
 
