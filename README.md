@@ -1,6 +1,6 @@
 # cedar-repo-server
 
-[![Build Status](https://travis-ci.org/metadatacenter/cedar-repo-server.svg?branch=master)](https://travis-ci.org/metadatacenter/cedar-repo-server)
+[![Build Status](https://travis-ci.com/metadatacenter/cedar-repo-server.svg?branch=master)](https://travis-ci.com/metadatacenter/cedar-repo-server)
 
 CEDAR server to retrieve objects by @id
 
