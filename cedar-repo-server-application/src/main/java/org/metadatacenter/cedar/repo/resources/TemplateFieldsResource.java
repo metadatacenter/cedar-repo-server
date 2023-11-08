@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.id.CedarFieldId;
-import org.metadatacenter.id.CedarTemplateInstanceId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.service.TemplateFieldService;
