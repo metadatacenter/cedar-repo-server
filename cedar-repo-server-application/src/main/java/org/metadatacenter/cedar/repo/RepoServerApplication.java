@@ -1,11 +1,11 @@
 package org.metadatacenter.cedar.repo;
 
 import com.mongodb.client.MongoClient;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
 import org.metadatacenter.bridge.CedarDataServices;
-import org.metadatacenter.cedar.repo.health.RepoServerHealthCheck;
 import org.metadatacenter.cedar.repo.resources.*;
+import org.metadatacenter.cedar.util.dw.CedarDefaultHealthCheck;
 import org.metadatacenter.cedar.util.dw.CedarMicroserviceApplicationWithMongo;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.MongoConfig;
@@ -39,7 +39,7 @@ public class RepoServerApplication extends CedarMicroserviceApplicationWithMongo
   @Override
   public void runApp(RepoServerConfiguration configuration, Environment environment) {
 
-    final IndexResource index = new IndexResource();
+    final IndexResource index = new IndexResource(cedarConfig);
     environment.jersey().register(index);
 
     final TemplatesResource templates = new TemplatesResource(cedarConfig, templateService);
@@ -54,7 +54,7 @@ public class RepoServerApplication extends CedarMicroserviceApplicationWithMongo
     final TemplateInstancesResource instances = new TemplateInstancesResource(cedarConfig, templateInstanceService);
     environment.jersey().register(instances);
 
-    final RepoServerHealthCheck healthCheck = new RepoServerHealthCheck();
+    final CedarDefaultHealthCheck healthCheck = new CedarDefaultHealthCheck();
     environment.healthChecks().register("message", healthCheck);
   }
 }
