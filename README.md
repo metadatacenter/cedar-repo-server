@@ -1,6 +1,6 @@
 # cedar-repo-server
 
-[![Build Status](https://travis-ci.com/metadatacenter/cedar-repo-server.svg?branch=master)](https://travis-ci.com/metadatacenter/cedar-repo-server)
+[![CI](https://github.com/metadatacenter/cedar-repo-server/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/metadatacenter/cedar-repo-server/actions/workflows/ci.yml)
 
 CEDAR server to retrieve objects by @id
 

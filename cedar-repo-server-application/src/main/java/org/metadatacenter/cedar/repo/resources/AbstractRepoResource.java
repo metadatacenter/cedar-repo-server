@@ -13,13 +13,20 @@ import org.metadatacenter.server.ResourcePermissionServiceSession;
 
 public abstract class AbstractRepoResource extends CedarMicroserviceResource {
 
+  protected final org.metadatacenter.bridge.CedarDataServices dataServices;
+
   public AbstractRepoResource(CedarConfig cedarConfig) {
+    this(cedarConfig, org.metadatacenter.bridge.CedarDataServices.getInstance());
+  }
+
+  public AbstractRepoResource(CedarConfig cedarConfig, org.metadatacenter.bridge.CedarDataServices dataServices) {
     super(cedarConfig);
+    this.dataServices = dataServices;
   }
 
   protected boolean userHasNoReadAccessToArtifact(CedarRequestContext context, CedarArtifactId artifactId) throws CedarException {
-    FolderServiceSession folderSession = CedarDataServices.getFolderServiceSession(context);
-    ResourcePermissionServiceSession permissionSession = CedarDataServices.getResourcePermissionServiceSession(context);
+    FolderServiceSession folderSession = dataServices.getFolderServiceSession(context);
+    ResourcePermissionServiceSession permissionSession = dataServices.getResourcePermissionServiceSession(context);
     FolderServerArtifactCurrentUserReport resourceCurrentUserReport = GraphDbPermissionReader.getArtifactCurrentUserReport(context, folderSession,
         permissionSession, cedarConfig, artifactId);
     if (resourceCurrentUserReport == null) {
