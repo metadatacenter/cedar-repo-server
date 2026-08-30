@@ -3,16 +3,13 @@ package org.metadatacenter.cedar.repo;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.dropwizard.testing.DropwizardTestSupport;
 import io.dropwizard.testing.ResourceHelpers;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.bson.Document;
 import org.metadatacenter.bridge.CedarDataServices;
-import org.metadatacenter.cedar.repo.resources.TemplateElementsResource;
-import org.metadatacenter.cedar.repo.resources.TemplateFieldsResource;
-import org.metadatacenter.cedar.repo.resources.TemplateInstancesResource;
-import org.metadatacenter.cedar.repo.resources.TemplatesResource;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.environment.CedarEnvironmentVariableProvider;
 import org.metadatacenter.model.CedarResourceType;
@@ -33,6 +30,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -99,15 +98,32 @@ public class RepoRoutesRespondTest {
     SERVER.after();
   }
 
+  /**
+   * Every repo resource class that declares endpoints, read from what the booted application
+   * actually registered rather than from a list kept by hand. A resource added to
+   * {@code RepoServerApplication} and left out of such a list is a route this test silently stops
+   * probing — which is the regression it exists to catch. {@code IndexResource} is excluded because
+   * it is deliberately unauthenticated.
+   */
+  private static List<Class<?>> resourceClasses() {
+    ResourceConfig resourceConfig = SERVER.getEnvironment().jersey().getResourceConfig();
+    List<Object> registeredComponents = new ArrayList<>();
+    registeredComponents.addAll(resourceConfig.getInstances());
+    registeredComponents.addAll(resourceConfig.getSingletons());
+    registeredComponents.addAll(resourceConfig.getClasses());
+    registeredComponents.addAll(resourceConfig.getResources());
+    return RouteSurface.registeredResourceClasses(registeredComponents, "org.metadatacenter").stream()
+        .filter(resourceClass -> !resourceClass.getSimpleName().equals("IndexResource"))
+        .toList();
+  }
+
   @Test
   public void everyRouteRejectsAnUnauthenticatedRequest() {
+    List<Class<?>> resources = resourceClasses();
+    Assertions.assertFalse(resources.isEmpty(), "No repo resource classes found by reflection");
     RouteSurface.assertEveryRouteAnswers(
         "http://localhost:" + SERVER.getLocalPort(),
-        RouteSurface.endpoints(
-            TemplatesResource.class,
-            TemplateElementsResource.class,
-            TemplateFieldsResource.class,
-            TemplateInstancesResource.class),
+        RouteSurface.endpoints(resources),
         401);
   }
 
