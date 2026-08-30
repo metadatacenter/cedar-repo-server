@@ -45,11 +45,11 @@ public class RepoRoutesRespondTest {
 
   static {
     // Must run before the test support boots the server, which reads the port env vars. Ports are
-    // distinct from the dev server and from every other booting test class.
+    // assigned by the OS, so they cannot collide with the dev server or another test.
     EmbeddedCedarMongo.startAndRedirectEnvironment(Map.of(
-        "CEDAR_REPO_HTTP_PORT", "19023",
-        "CEDAR_REPO_ADMIN_PORT", "19123",
-        "CEDAR_REPO_STOP_PORT", "19223"));
+        "CEDAR_REPO_HTTP_PORT", "0",
+        "CEDAR_REPO_ADMIN_PORT", "0",
+        "CEDAR_REPO_STOP_PORT", "0"));
     EmbeddedCedarNeo4j.startAndRedirectEnvironment();
   }
 

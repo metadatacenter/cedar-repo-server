@@ -33,9 +33,9 @@ class RepoMongoOutageTest {
 
   static {
     EmbeddedCedarNeo4j.startAndRedirectEnvironment(Map.of(
-        "CEDAR_REPO_HTTP_PORT", "19025",
-        "CEDAR_REPO_ADMIN_PORT", "19125",
-        "CEDAR_REPO_STOP_PORT", "19225",
+        "CEDAR_REPO_HTTP_PORT", "0",
+        "CEDAR_REPO_ADMIN_PORT", "0",
+        "CEDAR_REPO_STOP_PORT", "0",
         "CEDAR_MONGO_HOST", "127.0.0.1",
         "CEDAR_MONGO_PORT", "1",
         "CEDAR_REDIS_PERSISTENT_PORT", "1"));
@@ -82,9 +82,9 @@ class RepoMongoOutageTest {
   static void stopServer() {
     SERVER.after();
     EmbeddedCedarMongo.startAndRedirectEnvironment(Map.of(
-        "CEDAR_REPO_HTTP_PORT", "19025",
-        "CEDAR_REPO_ADMIN_PORT", "19125",
-        "CEDAR_REPO_STOP_PORT", "19225",
+        "CEDAR_REPO_HTTP_PORT", "0",
+        "CEDAR_REPO_ADMIN_PORT", "0",
+        "CEDAR_REPO_STOP_PORT", "0",
         "CEDAR_REDIS_PERSISTENT_PORT", "1"));
   }
 
