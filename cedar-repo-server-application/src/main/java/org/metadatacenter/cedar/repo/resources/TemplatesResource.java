@@ -2,6 +2,7 @@ package org.metadatacenter.cedar.repo.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mongodb.MongoException;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.id.CedarTemplateId;
@@ -58,6 +59,8 @@ public class TemplatesResource extends AbstractRepoResource {
         return Response.ok().entity(template).build();
       }
       return CedarResponse.notFound().build();
+    } catch (MongoException e) {
+      throw e;
     } catch (Exception e) {
       return CedarResponse.internalServerError().exception(e).build();
     }
