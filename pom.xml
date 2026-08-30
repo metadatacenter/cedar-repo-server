@@ -26,7 +26,6 @@
   </scm>
 
   <modules>
-    <module>cedar-repo-server-core</module>
     <module>cedar-repo-server-application</module>
   </modules>
 
