@@ -27,11 +27,11 @@ import static org.metadatacenter.server.security.model.auth.CedarPermission.TEMP
 @Produces(MediaType.APPLICATION_JSON)
 public class TemplatesResource extends AbstractRepoResource {
 
-  private static TemplateService<String, JsonNode> templateService;
+  private final TemplateService<String, JsonNode> templateService;
 
   public TemplatesResource(CedarConfig cedarConfig, TemplateService<String, JsonNode> templateService) {
     super(cedarConfig);
-    TemplatesResource.templateService = templateService;
+    this.templateService = templateService;
   }
 
   @GET
