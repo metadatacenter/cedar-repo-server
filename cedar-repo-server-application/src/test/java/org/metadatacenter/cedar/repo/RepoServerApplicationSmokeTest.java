@@ -62,6 +62,22 @@ public class RepoServerApplicationSmokeTest {
     Assertions.assertTrue(response.body().contains("name"));
   }
 
+  /**
+   * The repo server ships no API spec, so it neither advertises documentation nor serves any.
+   *
+   * <p>Both used to happen regardless: the asset bundle was registered from shared library code
+   * whether or not the service had a document, and the index resource advertised swagger.json and
+   * the Swagger UI from the root of every service. On the ten that ship no spec, a caller followed
+   * either link to a 404.
+   */
+  @Test
+  public void noApiDocumentationIsAdvertisedOrServed() throws Exception {
+    Assertions.assertFalse(get("/").body().contains("apiDocs"),
+        "A service with no spec should advertise no documentation links");
+    Assertions.assertEquals(404, get("/swagger-api/swagger.json").statusCode(),
+        "A service with no spec should serve nothing at the spec path");
+  }
+
   @Test
   public void protectedEndpointRejectsMissingCredentials() throws Exception {
     HttpResponse<String> response = get("/templates/x");
