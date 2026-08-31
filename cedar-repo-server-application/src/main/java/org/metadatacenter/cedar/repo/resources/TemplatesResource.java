@@ -1,6 +1,12 @@
 package org.metadatacenter.cedar.repo.resources;
 
 import com.codahale.metrics.annotation.Timed;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.MongoException;
 import org.metadatacenter.config.CedarConfig;
@@ -25,6 +31,8 @@ import static org.metadatacenter.server.security.model.auth.CedarPermission.TEMP
 
 @Path("/templates")
 @Produces(MediaType.APPLICATION_JSON)
+@Tag(name = "Templates")
+@SecurityRequirement(name = "api_key")
 public class TemplatesResource extends AbstractRepoResource {
 
   private final TemplateService<String, JsonNode> templateService;
@@ -37,7 +45,29 @@ public class TemplatesResource extends AbstractRepoResource {
   @GET
   @Timed
   @Path("/{id}")
-  public Response findTemplate(@PathParam(PP_ID) String id) throws CedarException {
+  @Operation(summary = "Resolve a template identifier",
+      description = "Return the template a CEDAR identifier names. This is where an artifact's `@id` "
+          + "dereferences to, so the path segment is the bare identifier that ends that IRI rather "
+          + "than the IRI itself. Reading is checked twice: the caller needs the template read "
+          + "permission, and then read access to this particular artifact as the workspace records "
+          + "it. Mongo's internal `_id` is removed before the artifact is returned.")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "The stored template"),
+      @ApiResponse(responseCode = "401",
+          description = "The request carries no valid credentials, or the caller has no read access "
+              + "to this artifact. The second case is a permission failure reported as 401 rather "
+              + "than 403."),
+      @ApiResponse(responseCode = "403", description = "The caller lacks the template read permission"),
+      @ApiResponse(responseCode = "404",
+          description = "The workspace knows the identifier but the repository holds no such artifact"),
+      @ApiResponse(responseCode = "500",
+          description = "Internal server error. Also returned for an identifier the workspace does "
+              + "not know at all, which is reported as a server error rather than as a 404.")
+  })
+  public Response findTemplate(
+      @Parameter(description = "The bare identifier ending the artifact's IRI, not the whole IRI. "
+          + "Example: 8bc64ab5-df6b-48c8-8c61-6c016245918e", required = true)
+      @PathParam(PP_ID) String id) throws CedarException {
 
     CedarRequestContext c = buildRequestContext();
 

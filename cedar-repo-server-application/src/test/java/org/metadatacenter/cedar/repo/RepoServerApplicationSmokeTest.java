@@ -63,19 +63,21 @@ public class RepoServerApplicationSmokeTest {
   }
 
   /**
-   * The repo server ships no API spec, so it neither advertises documentation nor serves any.
+   * The repo server ships an API spec, so it advertises the documentation links and serves the
+   * document.
    *
-   * <p>Both used to happen regardless: the asset bundle was registered from shared library code
-   * whether or not the service had a document, and the index resource advertised swagger.json and
-   * the Swagger UI from the root of every service. On the ten that ship no spec, a caller followed
-   * either link to a 404.
+   * <p>It shipped none until its resource classes were annotated, and it was this test that held the
+   * quiet side of the documentation gate. That side is now held by
+   * {@code GroupServerApplicationSmokeTest}, whose server still has no spec.
    */
   @Test
-  public void noApiDocumentationIsAdvertisedOrServed() throws Exception {
-    Assertions.assertFalse(get("/").body().contains("apiDocs"),
-        "A service with no spec should advertise no documentation links");
-    Assertions.assertEquals(404, get("/swagger-api/swagger.json").statusCode(),
-        "A service with no spec should serve nothing at the spec path");
+  public void apiDocumentationIsAdvertisedAndServed() throws Exception {
+    Assertions.assertTrue(get("/").body().contains("apiDocs"),
+        "A service with a spec should advertise its documentation");
+
+    HttpResponse<String> spec = get("/swagger-api/swagger.json");
+    Assertions.assertEquals(200, spec.statusCode(), "The advertised spec path should serve the document");
+    Assertions.assertTrue(spec.body().contains("openapi"), "The document served should be an OpenAPI spec");
   }
 
   @Test
