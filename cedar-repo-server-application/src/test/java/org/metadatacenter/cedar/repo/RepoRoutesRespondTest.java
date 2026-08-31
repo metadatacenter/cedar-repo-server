@@ -21,6 +21,7 @@ import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.util.json.JsonMapper;
 import org.metadatacenter.util.test.EmbeddedCedarMongo;
 import org.metadatacenter.util.test.EmbeddedCedarNeo4j;
+import org.metadatacenter.cedar.util.dw.CedarMicroserviceIndexResource;
 import org.metadatacenter.util.test.RouteSurface;
 import org.metadatacenter.util.test.TestAuthUtil;
 
@@ -113,7 +114,7 @@ public class RepoRoutesRespondTest {
     registeredComponents.addAll(resourceConfig.getClasses());
     registeredComponents.addAll(resourceConfig.getResources());
     return RouteSurface.registeredResourceClasses(registeredComponents, "org.metadatacenter").stream()
-        .filter(resourceClass -> !resourceClass.getSimpleName().equals("IndexResource"))
+        .filter(resourceClass -> !CedarMicroserviceIndexResource.class.isAssignableFrom(resourceClass))
         .toList();
   }
 
