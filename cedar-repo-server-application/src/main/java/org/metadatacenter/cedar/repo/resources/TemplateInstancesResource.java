@@ -78,7 +78,12 @@ public class TemplateInstancesResource extends AbstractRepoResource {
     CedarTemplateInstanceId tid = CedarTemplateInstanceId.build(templateInstanceId);
 
     if (userHasNoReadAccessToArtifact(c, tid)) {
-      return CedarResponse.unauthorized().build();
+      // The user is authenticated: be(LoggedIn) passed above. What failed is authorization, and a
+      // permission denial reported as 401 wrongly tells a client to re-authenticate, which cannot
+      // help. CedarErrorType states the rule; the resource server already answers 403 here.
+      return CedarResponse.forbidden()
+          .errorMessage("You do not have read access to this template instance")
+          .build();
     }
 
     try {
