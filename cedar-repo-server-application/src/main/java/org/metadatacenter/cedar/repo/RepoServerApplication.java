@@ -6,7 +6,6 @@ import io.dropwizard.core.setup.Environment;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.cedar.repo.resources.*;
 import org.metadatacenter.cedar.util.dw.CedarMicroserviceIndexResource;
-import org.metadatacenter.cedar.util.dw.CedarDefaultHealthCheck;
 import org.metadatacenter.cedar.util.dw.CedarMicroserviceApplicationWithMongo;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.MongoConfig;
@@ -56,7 +55,5 @@ public class RepoServerApplication extends CedarMicroserviceApplicationWithMongo
     final TemplateInstancesResource instances = new TemplateInstancesResource(cedarConfig, templateInstanceService);
     environment.jersey().register(instances);
 
-    final CedarDefaultHealthCheck healthCheck = new CedarDefaultHealthCheck();
-    environment.healthChecks().register("message", healthCheck);
   }
 }
