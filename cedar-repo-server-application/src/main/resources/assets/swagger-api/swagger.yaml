@@ -11,7 +11,7 @@ info:
     permissions rather than the caller's role alone. Writes, listings, and validation belong to the
     artifact server.
   title: CEDAR Repo Server API
-  version: 2.9.4-SNAPSHOT
+  version: 2.9.4
 paths:
   /template-elements/{id}:
     get:
