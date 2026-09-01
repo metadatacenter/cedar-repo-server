@@ -1,0 +1,174 @@
+openapi: 3.0.1
+info:
+  description: |
+    Better Metadata - Better Science
+
+    The repo server resolves CEDAR artifact identifiers. An artifact's `@id` is an IRI under this
+    server, and dereferencing that IRI returns the stored artifact, so every path here takes the
+    bare identifier that ends the IRI rather than the whole IRI.
+
+    It is read-only, and it is the one artifact read path that checks the workspace's per-artifact
+    permissions rather than the caller's role alone. Writes, listings, and validation belong to the
+    artifact server.
+  title: CEDAR Repo Server API
+  version: 2.9.4
+paths:
+  /template-elements/{id}:
+    get:
+      description: "Return the template element a CEDAR identifier names. This is\
+        \ where an artifact's `@id` dereferences to, so the path segment is the bare\
+        \ identifier that ends that IRI rather than the IRI itself. Reading is checked\
+        \ twice: the caller needs the template element read permission, and then read\
+        \ access to this particular artifact as the workspace records it. Mongo's\
+        \ internal `_id` is removed before the artifact is returned."
+      operationId: findTemplateElement
+      parameters:
+      - description: "The bare identifier ending the artifact's IRI, not the whole\
+          \ IRI. Example: 8bc64ab5-df6b-48c8-8c61-6c016245918e"
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: The stored template element
+        "401":
+          description: "The request carries no valid credentials, or the caller has\
+            \ no read access to this artifact. The second case is a permission failure\
+            \ reported as 401 rather than 403."
+        "403":
+          description: The caller lacks the template element read permission
+        "404":
+          description: The workspace knows the identifier but the repository holds
+            no such artifact
+        "500":
+          description: "Internal server error. Also returned for an identifier the\
+            \ workspace does not know at all, which is reported as a server error\
+            \ rather than as a 404."
+      security:
+      - api_key: []
+      summary: Resolve a template element identifier
+      tags:
+      - Template elements
+  /template-fields/{id}:
+    get:
+      description: "Return the template field a CEDAR identifier names. This is where\
+        \ an artifact's `@id` dereferences to, so the path segment is the bare identifier\
+        \ that ends that IRI rather than the IRI itself. Reading is checked twice:\
+        \ the caller needs the template field read permission, and then read access\
+        \ to this particular artifact as the workspace records it. Mongo's internal\
+        \ `_id` is removed before the artifact is returned."
+      operationId: findTemplateField
+      parameters:
+      - description: "The bare identifier ending the artifact's IRI, not the whole\
+          \ IRI. Example: 8bc64ab5-df6b-48c8-8c61-6c016245918e"
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: The stored template field
+        "401":
+          description: "The request carries no valid credentials, or the caller has\
+            \ no read access to this artifact. The second case is a permission failure\
+            \ reported as 401 rather than 403."
+        "403":
+          description: The caller lacks the template field read permission
+        "404":
+          description: The workspace knows the identifier but the repository holds
+            no such artifact
+        "500":
+          description: "Internal server error. Also returned for an identifier the\
+            \ workspace does not know at all, which is reported as a server error\
+            \ rather than as a 404."
+      security:
+      - api_key: []
+      summary: Resolve a template field identifier
+      tags:
+      - Template fields
+  /template-instances/{id}:
+    get:
+      description: "Return the template instance a CEDAR identifier names. This is\
+        \ where an artifact's `@id` dereferences to, so the path segment is the bare\
+        \ identifier that ends that IRI rather than the IRI itself. Reading is checked\
+        \ twice: the caller needs the template instance read permission, and then\
+        \ read access to this particular artifact as the workspace records it. Mongo's\
+        \ internal `_id` is removed before the artifact is returned."
+      operationId: findTemplateInstance
+      parameters:
+      - description: "The bare identifier ending the artifact's IRI, not the whole\
+          \ IRI. Example: 8bc64ab5-df6b-48c8-8c61-6c016245918e"
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: The stored template instance
+        "401":
+          description: "The request carries no valid credentials, or the caller has\
+            \ no read access to this artifact. The second case is a permission failure\
+            \ reported as 401 rather than 403."
+        "403":
+          description: The caller lacks the template instance read permission
+        "404":
+          description: The workspace knows the identifier but the repository holds
+            no such artifact
+        "500":
+          description: "Internal server error. Also returned for an identifier the\
+            \ workspace does not know at all, which is reported as a server error\
+            \ rather than as a 404."
+      security:
+      - api_key: []
+      summary: Resolve a template instance identifier
+      tags:
+      - Template instances
+  /templates/{id}:
+    get:
+      description: "Return the template a CEDAR identifier names. This is where an\
+        \ artifact's `@id` dereferences to, so the path segment is the bare identifier\
+        \ that ends that IRI rather than the IRI itself. Reading is checked twice:\
+        \ the caller needs the template read permission, and then read access to this\
+        \ particular artifact as the workspace records it. Mongo's internal `_id`\
+        \ is removed before the artifact is returned."
+      operationId: findTemplate
+      parameters:
+      - description: "The bare identifier ending the artifact's IRI, not the whole\
+          \ IRI. Example: 8bc64ab5-df6b-48c8-8c61-6c016245918e"
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: The stored template
+        "401":
+          description: "The request carries no valid credentials, or the caller has\
+            \ no read access to this artifact. The second case is a permission failure\
+            \ reported as 401 rather than 403."
+        "403":
+          description: The caller lacks the template read permission
+        "404":
+          description: The workspace knows the identifier but the repository holds
+            no such artifact
+        "500":
+          description: "Internal server error. Also returned for an identifier the\
+            \ workspace does not know at all, which is reported as a server error\
+            \ rather than as a 404."
+      security:
+      - api_key: []
+      summary: Resolve a template identifier
+      tags:
+      - Templates
+components:
+  securitySchemes:
+    api_key:
+      description: "Your CEDAR API key, using the format 'apiKey <yourApiKey>'"
+      in: header
+      name: Authorization
+      type: apiKey

@@ -13,15 +13,13 @@ import org.metadatacenter.server.ResourcePermissionServiceSession;
 
 public abstract class AbstractRepoResource extends CedarMicroserviceResource {
 
-  protected final org.metadatacenter.bridge.CedarDataServices dataServices;
 
   public AbstractRepoResource(CedarConfig cedarConfig) {
-    this(cedarConfig, org.metadatacenter.bridge.CedarDataServices.getInstance());
+    super(cedarConfig);
   }
 
-  public AbstractRepoResource(CedarConfig cedarConfig, org.metadatacenter.bridge.CedarDataServices dataServices) {
-    super(cedarConfig);
-    this.dataServices = dataServices;
+  public AbstractRepoResource(CedarConfig cedarConfig, CedarDataServices dataServices) {
+    super(cedarConfig, dataServices);
   }
 
   protected boolean userHasNoReadAccessToArtifact(CedarRequestContext context, CedarArtifactId artifactId) throws CedarException {
