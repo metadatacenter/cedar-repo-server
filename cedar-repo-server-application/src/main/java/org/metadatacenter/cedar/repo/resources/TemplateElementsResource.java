@@ -3,12 +3,15 @@ package org.metadatacenter.cedar.repo.resources;
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.MongoException;
+import org.metadatacenter.util.http.CedarError;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.id.CedarElementId;
@@ -53,14 +56,14 @@ public class TemplateElementsResource extends AbstractRepoResource {
           + "it. Mongo's internal `_id` is removed before the artifact is returned.")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "The stored template element"),
-      @ApiResponse(responseCode = "401",
+      @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = CedarError.class)),
           description = "The request carries no valid credentials, or the caller has no read access "
               + "to this artifact. The second case is a permission failure reported as 401 rather "
               + "than 403."),
-      @ApiResponse(responseCode = "403", description = "The caller lacks the template element read permission"),
-      @ApiResponse(responseCode = "404",
+      @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = CedarError.class)), description = "The caller lacks the template element read permission"),
+      @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = CedarError.class)),
           description = "The workspace knows the identifier but the repository holds no such artifact"),
-      @ApiResponse(responseCode = "500",
+      @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = CedarError.class)),
           description = "Internal server error. Also returned for an identifier the workspace does "
               + "not know at all, which is reported as a server error rather than as a 404.")
   })
