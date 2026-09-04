@@ -3,7 +3,7 @@
   "info" : {
     "description" : "Better Metadata - Better Science\n\nThe repo server resolves CEDAR artifact identifiers. An artifact's `@id` is an IRI under this\nserver, and dereferencing that IRI returns the stored artifact, so every path here takes the\nbare identifier that ends the IRI rather than the whole IRI.\n\nIt is read-only, and it is the one artifact read path that checks the workspace's per-artifact\npermissions rather than the caller's role alone. Writes, listings, and validation belong to the\nartifact server.\n",
     "title" : "CEDAR Repo Server API",
-    "version" : "2.9.7-SNAPSHOT"
+    "version" : "2.9.7"
   },
   "paths" : {
     "/template-elements/{id}" : {
