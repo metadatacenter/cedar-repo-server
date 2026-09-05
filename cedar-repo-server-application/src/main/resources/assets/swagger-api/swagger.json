@@ -3,7 +3,7 @@
   "info" : {
     "description" : "Better Metadata - Better Science\n\nThe repo server resolves CEDAR artifact identifiers. An artifact's `@id` is an IRI under this\nserver, and dereferencing that IRI returns the stored artifact, so every path here takes the\nbare identifier that ends the IRI rather than the whole IRI.\n\nIt is read-only, and it is the one artifact read path that checks the workspace's per-artifact\npermissions rather than the caller's role alone. Writes, listings, and validation belong to the\nartifact server.\n",
     "title" : "CEDAR Repo Server API",
-    "version" : "2.9.7"
+    "version" : "2.9.8"
   },
   "paths" : {
     "/template-elements/{id}" : {
@@ -24,15 +24,43 @@
             "description" : "The stored template element"
           },
           "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The request carries no valid credentials, or the caller has no read access to this artifact. The second case is a permission failure reported as 401 rather than 403."
           },
           "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The caller lacks the template element read permission"
           },
           "404" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The workspace knows the identifier but the repository holds no such artifact"
           },
           "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "Internal server error. Also returned for an identifier the workspace does not know at all, which is reported as a server error rather than as a 404."
           }
         },
@@ -61,15 +89,43 @@
             "description" : "The stored template field"
           },
           "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The request carries no valid credentials, or the caller has no read access to this artifact. The second case is a permission failure reported as 401 rather than 403."
           },
           "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The caller lacks the template field read permission"
           },
           "404" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The workspace knows the identifier but the repository holds no such artifact"
           },
           "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "Internal server error. Also returned for an identifier the workspace does not know at all, which is reported as a server error rather than as a 404."
           }
         },
@@ -98,15 +154,43 @@
             "description" : "The stored template instance"
           },
           "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The request carries no valid credentials, or the caller has no read access to this artifact. The second case is a permission failure reported as 401 rather than 403."
           },
           "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The caller lacks the template instance read permission"
           },
           "404" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The workspace knows the identifier but the repository holds no such artifact"
           },
           "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "Internal server error. Also returned for an identifier the workspace does not know at all, which is reported as a server error rather than as a 404."
           }
         },
@@ -135,15 +219,43 @@
             "description" : "The stored template"
           },
           "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The request carries no valid credentials, or the caller has no read access to this artifact. The second case is a permission failure reported as 401 rather than 403."
           },
           "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The caller lacks the template read permission"
           },
           "404" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "The workspace knows the identifier but the repository holds no such artifact"
           },
           "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CedarError"
+                }
+              }
+            },
             "description" : "Internal server error. Also returned for an identifier the workspace does not know at all, which is reported as a server error rather than as a 404."
           }
         },
@@ -156,6 +268,104 @@
     }
   },
   "components" : {
+    "schemas" : {
+      "CedarError" : {
+        "type" : "object",
+        "additionalProperties" : true,
+        "description" : "A CEDAR error response. Diagnostic fields are populated only when they are relevant to the failure.",
+        "properties" : {
+          "entities" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "description" : "Named domain entities associated with exception-mapped errors.",
+              "nullable" : true
+            },
+            "description" : "Named domain entities associated with exception-mapped errors.",
+            "nullable" : true
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid",
+            "description" : "Correlation identifier for an internal error recorded in server logs.",
+            "nullable" : true
+          },
+          "errorKey" : {
+            "type" : "string",
+            "description" : "Stable machine-readable error identifier.",
+            "enum" : [ "templateElementNotCreated", "templateElementNotFound", "templateElementNotDeleted", "templateElementNotUpdated", "templateElementsNotListed", "templateFieldNotCreated", "templateFieldNotFound", "templateFieldNotDeleted", "templateFieldNotUpdated", "templateFieldsNotListed", "templateNotCreated", "templateNotFound", "templateNotDeleted", "templateNotUpdated", "templatesNotListed", "templateInstanceNotCreated", "templateInstanceNotFound", "templateInstanceNotDeleted", "templateInstanceNotUpdated", "templateInstancesNotListed", "noReadAccessToResource", "noWriteAccessToResource", "noReadAccessToFolder", "noWriteAccessToFolder", "noReadAccessToTemplate", "noWriteAccessToTemplate", "noReadAccessToTemplateElement", "noWriteAccessToTemplateElement", "noReadAccessToTemplateField", "noWriteAccessToTemplateField", "noReadAccessToTemplateInstance", "noWriteAccessToTemplateInstance", "noReadAccessToArtifact", "noWriteAccessToArtifact", "noWriteAccessToCategory", "folderNotFound", "artifactNotFound", "artifactPreconditionRequired", "artifactHasMovedOn", "verbatimWriteRefused", "nodeNotFound", "unknownResourceType", "missingParameter", "invalidInput", "sourceFolderNotFound", "sourceResourceNotFound", "targetFolderNotFound", "nodeNotMoved", "groupNotFound", "userNotFound", "uniqueConstraintCollision", "invalidData", "notAuthorized", "permissionMissing", "tokenInvalid", "userInfoLoadByTokenFailed", "userInfoLoadByApiKeyFailed", "cedarUserNotFound", "authorizationNotFound", "permissionNotOwned", "authorizationTypeUnknown", "apiKeyNotFound", "tokenMissing", "tokenExpired", "parentFolderNotSpecified", "parentFolderSpecifiedTwice", "pathNotNormalized", "parentFolderNotFound", "updateInvalidFolderName", "createInvalidFolderName", "nodeAlreadyPresent", "folderNotCreated", "missingNameAndDescription", "missingData", "folderNotDeleted", "artifactNotDeleted", "resourceNotCreated", "invalidResourceType", "invalidArtifactType", "readOtherProfileForbidden", "updateOtherProfileForbidden", "folderCanNotBeDeleted", "folderCanNotBeChanged", "groupAlreadyPresent", "groupCanBeModifiedOnlyByGroupAdmin", "groupCanBeDeletedOnlyByGroupAdmin", "groupUsersNotUpdated", "specialGroupCanNotBeDeleted", "folderPermissionsCanNotBeChanged", "unknownInstanceOutputFormat", "folderCopyNotAllowed", "methodNotImplemented", "upstreamServerError", "nothingToDo", "parentCategoryNotFound", "categoryAlreadyPresent", "categoryNotFound", "categoryCanNotBeDeleted", "rootCategoryCanNotBeDeleted", "unableToAttachCategory", "unableToDetachCategory", "noCategoriesWereAttached", "malformedJsonRequestBody", "malformedSearchTerm", "publishedArtifactCanNotBeChanged", "publishedArtifactCanNotBeDeleted", "versioningOnlyOnLatest", "versioningOnlyByOwner", "nonVersionedArtifactType", "createDraftOnlyFromPublished", "publishOnlyDraft", "draftNotCreated", "contentNotValid", "doiNotSupportedByResourceType", "doiCanNotBeSetForEmptyAtId", "doiCanNotBeAltered", "doiCanNotBeSet", "doiAlreadyExists", "dataCiteDOIDisabled", "resourceNotFound", "internalError" ],
+            "nullable" : true
+          },
+          "errorMessage" : {
+            "type" : "string",
+            "description" : "Alias of message retained for compatibility.",
+            "nullable" : true
+          },
+          "errorReasonKey" : {
+            "type" : "string",
+            "description" : "More specific machine-readable reason for the error.",
+            "enum" : [ "nonEmptyFolder", "nonEmptyCategory", "userHomeFolder", "systemFolder", "templateReferencedInInstances", "validationError", "continuationExpired" ],
+            "nullable" : true
+          },
+          "errorType" : {
+            "type" : "string",
+            "description" : "Broad category of the error.",
+            "enum" : [ "notFound", "invalidArgument", "authorization", "permission", "server", "validationError" ],
+            "nullable" : true
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "Human-readable error message.",
+            "nullable" : true
+          },
+          "objects" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "description" : "Named structured values associated with the error."
+            },
+            "description" : "Named structured values associated with the error."
+          },
+          "operation" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "description" : "Operation that failed. Its fields depend on the operation type.",
+              "nullable" : true
+            },
+            "description" : "Operation that failed. Its fields depend on the operation type.",
+            "nullable" : true
+          },
+          "parameters" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "description" : "Named scalar values associated with the error."
+            },
+            "description" : "Named scalar values associated with the error."
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Symbolic HTTP response status.",
+            "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "METHOD_NOT_ALLOWED", "NOT_ACCEPTABLE", "CONFLICT", "PRECONDITION_FAILED", "UNSUPPORTED_MEDIA_TYPE", "UNPROCESSABLE_ENTITY", "PRECONDITION_REQUIRED", "INTERNAL_SERVER_ERROR", "NOT_IMPLEMENTED", "BAD_GATEWAY", "SERVICE_UNAVAILABLE", "HTTP_VERSION_NOT_SUPPORTED" ]
+          },
+          "statusCode" : {
+            "type" : "integer",
+            "format" : "int32",
+            "description" : "Numeric HTTP response status.",
+            "maximum" : 599,
+            "minimum" : 400
+          },
+          "suggestedAction" : {
+            "type" : "string",
+            "description" : "Recovery action suggested to the client.",
+            "enum" : [ "none", "requestRole", "logout", "logoutImmediately", "provideAuthorizationHeader", "refreshToken" ],
+            "nullable" : true
+          }
+        },
+        "required" : [ "status", "statusCode" ]
+      }
+    },
     "securitySchemes" : {
       "api_key" : {
         "description" : "Your CEDAR API key, using the format 'apiKey <yourApiKey>'",
