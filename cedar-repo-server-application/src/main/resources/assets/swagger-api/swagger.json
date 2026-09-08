@@ -21,6 +21,13 @@
         } ],
         "responses" : {
           "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SchemaArtifactDocument"
+                }
+              }
+            },
             "description" : "The stored template element"
           },
           "401" : {
@@ -86,6 +93,13 @@
         } ],
         "responses" : {
           "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SchemaArtifactDocument"
+                }
+              }
+            },
             "description" : "The stored template field"
           },
           "401" : {
@@ -151,6 +165,13 @@
         } ],
         "responses" : {
           "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InstanceArtifactDocument"
+                }
+              }
+            },
             "description" : "The stored template instance"
           },
           "401" : {
@@ -216,6 +237,13 @@
         } ],
         "responses" : {
           "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SchemaArtifactDocument"
+                }
+              }
+            },
             "description" : "The stored template"
           },
           "401" : {
@@ -293,7 +321,7 @@
           "errorKey" : {
             "type" : "string",
             "description" : "Stable machine-readable error identifier.",
-            "enum" : [ "templateElementNotCreated", "templateElementNotFound", "templateElementNotDeleted", "templateElementNotUpdated", "templateElementsNotListed", "templateFieldNotCreated", "templateFieldNotFound", "templateFieldNotDeleted", "templateFieldNotUpdated", "templateFieldsNotListed", "templateNotCreated", "templateNotFound", "templateNotDeleted", "templateNotUpdated", "templatesNotListed", "templateInstanceNotCreated", "templateInstanceNotFound", "templateInstanceNotDeleted", "templateInstanceNotUpdated", "templateInstancesNotListed", "noReadAccessToResource", "noWriteAccessToResource", "noReadAccessToFolder", "noWriteAccessToFolder", "noReadAccessToTemplate", "noWriteAccessToTemplate", "noReadAccessToTemplateElement", "noWriteAccessToTemplateElement", "noReadAccessToTemplateField", "noWriteAccessToTemplateField", "noReadAccessToTemplateInstance", "noWriteAccessToTemplateInstance", "noReadAccessToArtifact", "noWriteAccessToArtifact", "noReadAccessToCategory", "noWriteAccessToCategory", "folderNotFound", "artifactNotFound", "artifactPreconditionRequired", "artifactHasMovedOn", "verbatimWriteRefused", "nodeNotFound", "unknownResourceType", "missingParameter", "invalidInput", "sourceFolderNotFound", "sourceResourceNotFound", "targetFolderNotFound", "nodeNotMoved", "groupNotFound", "userNotFound", "uniqueConstraintCollision", "invalidData", "notAuthorized", "permissionMissing", "tokenInvalid", "userInfoLoadByTokenFailed", "userInfoLoadByApiKeyFailed", "cedarUserNotFound", "authorizationNotFound", "permissionNotOwned", "authorizationTypeUnknown", "apiKeyNotFound", "tokenMissing", "tokenExpired", "parentFolderNotSpecified", "parentFolderSpecifiedTwice", "pathNotNormalized", "parentFolderNotFound", "updateInvalidFolderName", "createInvalidFolderName", "nodeAlreadyPresent", "folderNotCreated", "missingNameAndDescription", "missingData", "folderNotDeleted", "artifactNotDeleted", "resourceNotCreated", "invalidResourceType", "invalidArtifactType", "readOtherProfileForbidden", "updateOtherProfileForbidden", "folderCanNotBeDeleted", "folderCanNotBeChanged", "groupAlreadyPresent", "groupCanBeModifiedOnlyByGroupAdmin", "groupCanBeDeletedOnlyByGroupAdmin", "groupRequiresAdministrator", "groupUsersNotUpdated", "specialGroupCanNotBeDeleted", "folderPermissionsCanNotBeChanged", "unknownInstanceOutputFormat", "folderCopyNotAllowed", "methodNotImplemented", "upstreamServerError", "nothingToDo", "parentCategoryNotFound", "categoryAlreadyPresent", "categoryNotFound", "categoryCanNotBeDeleted", "rootCategoryCanNotBeDeleted", "unableToAttachCategory", "unableToDetachCategory", "noCategoriesWereAttached", "malformedJsonRequestBody", "malformedSearchTerm", "publishedArtifactCanNotBeChanged", "publishedArtifactCanNotBeDeleted", "versioningOnlyOnLatest", "versioningOnlyByOwner", "nonVersionedArtifactType", "createDraftOnlyFromPublished", "publishOnlyDraft", "draftNotCreated", "contentNotValid", "doiNotSupportedByResourceType", "doiCanNotBeSetForEmptyAtId", "doiCanNotBeAltered", "doiCanNotBeSet", "doiAlreadyExists", "dataCiteDOIDisabled", "resourceNotFound", "internalError" ],
+            "enum" : [ "templateElementNotCreated", "templateElementNotFound", "templateElementNotDeleted", "templateElementNotUpdated", "templateElementsNotListed", "templateFieldNotCreated", "templateFieldNotFound", "templateFieldNotDeleted", "templateFieldNotUpdated", "templateFieldsNotListed", "templateNotCreated", "templateNotFound", "templateNotDeleted", "templateNotUpdated", "templatesNotListed", "templateInstanceNotCreated", "templateInstanceNotFound", "templateInstanceNotDeleted", "templateInstanceNotUpdated", "templateInstancesNotListed", "noReadAccessToResource", "noWriteAccessToResource", "noReadAccessToFolder", "noWriteAccessToFolder", "noReadAccessToTemplate", "noWriteAccessToTemplate", "noReadAccessToTemplateElement", "noWriteAccessToTemplateElement", "noReadAccessToTemplateField", "noWriteAccessToTemplateField", "noReadAccessToTemplateInstance", "noWriteAccessToTemplateInstance", "noReadAccessToArtifact", "noWriteAccessToArtifact", "noReadAccessToCategory", "noWriteAccessToCategory", "folderNotFound", "artifactNotFound", "artifactPreconditionRequired", "artifactHasMovedOn", "verbatimWriteRefused", "nodeNotFound", "unknownResourceType", "missingParameter", "invalidInput", "sourceFolderNotFound", "sourceResourceNotFound", "targetFolderNotFound", "nodeNotMoved", "groupNotFound", "userNotFound", "uniqueConstraintCollision", "invalidData", "notAuthorized", "permissionMissing", "tokenInvalid", "userInfoLoadByTokenFailed", "userInfoLoadByApiKeyFailed", "cedarUserNotFound", "authorizationNotFound", "permissionNotOwned", "authorizationTypeUnknown", "apiKeyNotFound", "tokenMissing", "tokenExpired", "parentFolderNotSpecified", "parentFolderSpecifiedTwice", "pathNotNormalized", "parentFolderNotFound", "updateInvalidFolderName", "createInvalidFolderName", "nodeAlreadyPresent", "folderNotCreated", "missingNameAndDescription", "missingData", "folderNotDeleted", "artifactNotDeleted", "resourceNotCreated", "invalidResourceType", "invalidArtifactType", "readOtherProfileForbidden", "updateOtherProfileForbidden", "folderCanNotBeDeleted", "folderCanNotBeChanged", "groupAlreadyPresent", "groupCanBeModifiedOnlyByGroupAdmin", "groupCanBeDeletedOnlyByGroupAdmin", "groupMembersCanBeReadOnlyByGroupAdmin", "groupRequiresAdministrator", "groupUsersNotUpdated", "specialGroupCanNotBeDeleted", "folderPermissionsCanNotBeChanged", "unknownInstanceOutputFormat", "folderCopyNotAllowed", "methodNotImplemented", "upstreamServerError", "nothingToDo", "parentCategoryNotFound", "categoryAlreadyPresent", "categoryNotFound", "categoryCanNotBeDeleted", "rootCategoryCanNotBeDeleted", "unableToAttachCategory", "unableToDetachCategory", "noCategoriesWereAttached", "malformedJsonRequestBody", "malformedSearchTerm", "publishedArtifactCanNotBeChanged", "publishedArtifactCanNotBeDeleted", "versioningOnlyOnLatest", "versioningOnlyByOwner", "nonVersionedArtifactType", "createDraftOnlyFromPublished", "publishOnlyDraft", "draftNotCreated", "contentNotValid", "doiNotSupportedByResourceType", "doiCanNotBeSetForEmptyAtId", "doiCanNotBeAltered", "doiCanNotBeSet", "doiAlreadyExists", "dataCiteDOIDisabled", "resourceNotFound", "internalError" ],
             "nullable" : true
           },
           "errorMessage" : {
@@ -364,6 +392,172 @@
           }
         },
         "required" : [ "status", "statusCode" ]
+      },
+      "InstanceArtifactDocument" : {
+        "type" : "object",
+        "additionalProperties" : true,
+        "description" : "A template instance. Its value keys are the names of the template's fields and elements, so the only fixed key beyond the common artifact keys is the template it is based on.",
+        "properties" : {
+          "@context" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "JSON-LD context for the keys the artifact uses."
+          },
+          "@id" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "The artifact's IRI. The server mints it on a POST, so a body sent to POST carries none; a body sent to PUT carries the IRI of the path."
+          },
+          "oslc:modifiedBy" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "IRI of the user who last changed it."
+          },
+          "pav:createdBy" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "IRI of the user who created it."
+          },
+          "pav:createdOn" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "When the artifact was created."
+          },
+          "pav:lastUpdatedOn" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "When the artifact was last changed."
+          },
+          "schema:description" : {
+            "type" : "string",
+            "description" : "Description shown with the name."
+          },
+          "schema:isBasedOn" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "IRI of the template the instance was filled in against."
+          },
+          "schema:name" : {
+            "type" : "string",
+            "description" : "Display name."
+          }
+        }
+      },
+      "SchemaArtifactDocument" : {
+        "type" : "object",
+        "additionalProperties" : true,
+        "description" : "A template, template element or template field. Beyond the common artifact keys it carries the model's versioning keys and the JSON Schema keys that declare the properties an instance may hold. The entries under `properties` depend on the artifact.",
+        "properties" : {
+          "$schema" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "The JSON Schema dialect IRI."
+          },
+          "@context" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "JSON-LD context for the keys the artifact uses."
+          },
+          "@id" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "The artifact's IRI. The server mints it on a POST, so a body sent to POST carries none; a body sent to PUT carries the IRI of the path."
+          },
+          "@type" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "IRI of the artifact kind.",
+            "enum" : [ "https://schema.metadatacenter.org/core/Template", "https://schema.metadatacenter.org/core/TemplateElement", "https://schema.metadatacenter.org/core/TemplateField", "https://schema.metadatacenter.org/core/StaticTemplateField" ]
+          },
+          "_ui" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Editor rendering directives: child order, labels, descriptions and, for a field, its input type."
+          },
+          "bibo:status" : {
+            "type" : "string",
+            "description" : "Publication status. A published artifact can no longer be changed.",
+            "enum" : [ "bibo:draft", "bibo:published" ]
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "JSON Schema description, derived from the name."
+          },
+          "oslc:modifiedBy" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "IRI of the user who last changed it."
+          },
+          "pav:createdBy" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "IRI of the user who created it."
+          },
+          "pav:createdOn" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "When the artifact was created."
+          },
+          "pav:derivedFrom" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "IRI of the artifact this one was copied from, when there is one.",
+            "nullable" : true
+          },
+          "pav:lastUpdatedOn" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "When the artifact was last changed."
+          },
+          "pav:previousVersion" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "IRI of the version this one was drafted from, when there is one.",
+            "nullable" : true
+          },
+          "pav:version" : {
+            "type" : "string",
+            "description" : "The artifact's own version."
+          },
+          "properties" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "One entry per child field or element, keyed by its name, plus the JSON-LD keys an instance must carry."
+          },
+          "required" : {
+            "type" : "array",
+            "description" : "Names of the properties an instance must carry.",
+            "items" : {
+              "type" : "string",
+              "description" : "Names of the properties an instance must carry."
+            }
+          },
+          "schema:description" : {
+            "type" : "string",
+            "description" : "Description shown with the name."
+          },
+          "schema:identifier" : {
+            "type" : "string",
+            "description" : "Caller-assigned identifier.",
+            "nullable" : true
+          },
+          "schema:name" : {
+            "type" : "string",
+            "description" : "Display name."
+          },
+          "schema:schemaVersion" : {
+            "type" : "string",
+            "description" : "Version of the CEDAR model the artifact conforms to."
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "JSON Schema title, derived from the name."
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Always `object`."
+          }
+        }
       }
     },
     "securitySchemes" : {

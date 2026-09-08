@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.MongoException;
+import org.metadatacenter.util.artifact.SchemaArtifactDocument;
 import org.metadatacenter.util.http.CedarError;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
@@ -55,7 +56,8 @@ public class TemplateElementsResource extends AbstractRepoResource {
           + "permission, and then read access to this particular artifact as the workspace records "
           + "it. Mongo's internal `_id` is removed before the artifact is returned.")
   @ApiResponses({
-      @ApiResponse(responseCode = "200", description = "The stored template element"),
+      @ApiResponse(responseCode = "200", description = "The stored template element",
+          content = @Content(schema = @Schema(implementation = SchemaArtifactDocument.class))),
       @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = CedarError.class)),
           description = "The request carries no valid credentials, or the caller has no read access "
               + "to this artifact. The second case is a permission failure reported as 401 rather "
