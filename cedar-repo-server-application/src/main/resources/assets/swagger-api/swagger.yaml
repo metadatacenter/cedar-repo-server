@@ -11,8 +11,216 @@ info:
     permissions rather than the caller's role alone. Writes, listings, and validation belong to the
     artifact server.
   title: CEDAR Repo Server API
-  version: 2.9.9
+  version: 2.9.10
 paths:
+  /:
+    get:
+      operationId: showInfo
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: The service name and links to its API documentation
+      summary: Describe this CEDAR service
+      tags:
+      - Service
+  /healthcheck:
+    get:
+      operationId: healthCheck
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: Every health check passed
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Forbidden
+        "500":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: At least one health check failed
+      security:
+      - api_key: []
+      summary: Run this service's health checks
+      tags:
+      - Service diagnostics
+  /insight/full:
+    get:
+      operationId: full
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: The requested JVM diagnostic report
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Forbidden
+      security:
+      - api_key: []
+      summary: Report all JVM diagnostics except per-thread stack traces
+      tags:
+      - Service diagnostics
+  /insight/gc:
+    get:
+      operationId: gc
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: The requested JVM diagnostic report
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Forbidden
+      security:
+      - api_key: []
+      summary: Report JVM garbage-collection counts
+      tags:
+      - Service diagnostics
+  /insight/memory:
+    get:
+      operationId: memory
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: The requested JVM diagnostic report
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Forbidden
+      security:
+      - api_key: []
+      summary: Report JVM memory use
+      tags:
+      - Service diagnostics
+  /insight/system:
+    get:
+      operationId: system
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: The requested JVM diagnostic report
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Forbidden
+      security:
+      - api_key: []
+      summary: Report operating-system information
+      tags:
+      - Service diagnostics
+  /insight/thread-details:
+    get:
+      operationId: threadDetails
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: The requested JVM diagnostic report
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Forbidden
+      security:
+      - api_key: []
+      summary: Report details and stack traces for every JVM thread
+      tags:
+      - Service diagnostics
+  /insight/threads:
+    get:
+      operationId: threads
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: The requested JVM diagnostic report
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: Forbidden
+      security:
+      - api_key: []
+      summary: Report JVM thread counts
+      tags:
+      - Service diagnostics
   /template-elements/{id}:
     get:
       description: "Return the template element a CEDAR identifier names. This is\
@@ -32,6 +240,10 @@ paths:
           type: string
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SchemaArtifactDocument"
           description: The stored template element
         "401":
           content:
@@ -86,6 +298,10 @@ paths:
           type: string
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SchemaArtifactDocument"
           description: The stored template field
         "401":
           content:
@@ -140,6 +356,10 @@ paths:
           type: string
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstanceArtifactDocument"
           description: The stored template instance
         "401":
           content:
@@ -194,6 +414,10 @@ paths:
           type: string
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SchemaArtifactDocument"
           description: The stored template
         "401":
           content:
@@ -342,6 +566,7 @@ components:
           - groupAlreadyPresent
           - groupCanBeModifiedOnlyByGroupAdmin
           - groupCanBeDeletedOnlyByGroupAdmin
+          - groupMembersCanBeReadOnlyByGroupAdmin
           - groupRequiresAdministrator
           - groupUsersNotUpdated
           - specialGroupCanNotBeDeleted
@@ -418,11 +643,6 @@ components:
           description: Named structured values associated with the error.
         operation:
           type: object
-          additionalProperties:
-            type: object
-            description: Operation that failed. Its fields depend on the operation
-              type.
-            nullable: true
           description: Operation that failed. Its fields depend on the operation type.
           nullable: true
         parameters:
@@ -471,6 +691,155 @@ components:
       required:
       - status
       - statusCode
+    InstanceArtifactDocument:
+      type: object
+      additionalProperties: true
+      description: "A template instance. Its value keys are the names of the template's\
+        \ fields and elements, so the only fixed key beyond the common artifact keys\
+        \ is the template it is based on."
+      properties:
+        '@context':
+          type: object
+          additionalProperties: true
+          description: JSON-LD context for the keys the artifact uses.
+        '@id':
+          type: string
+          format: uri
+          description: "The artifact's IRI. The server mints it on a POST, so a body\
+            \ sent to POST carries none; a body sent to PUT carries the IRI of the\
+            \ path."
+        oslc:modifiedBy:
+          type: string
+          format: uri
+          description: IRI of the user who last changed it.
+        pav:createdBy:
+          type: string
+          format: uri
+          description: IRI of the user who created it.
+        pav:createdOn:
+          type: string
+          format: date-time
+          description: When the artifact was created.
+        pav:lastUpdatedOn:
+          type: string
+          format: date-time
+          description: When the artifact was last changed.
+        schema:description:
+          type: string
+          description: Description shown with the name.
+        schema:isBasedOn:
+          type: string
+          format: uri
+          description: IRI of the template the instance was filled in against.
+        schema:name:
+          type: string
+          description: Display name.
+    SchemaArtifactDocument:
+      type: object
+      additionalProperties: true
+      description: "A template, template element or template field. Beyond the common\
+        \ artifact keys it carries the model's versioning keys and the JSON Schema\
+        \ keys that declare the properties an instance may hold. The entries under\
+        \ `properties` depend on the artifact."
+      properties:
+        $schema:
+          type: string
+          format: uri
+          description: The JSON Schema dialect IRI.
+        '@context':
+          type: object
+          additionalProperties: true
+          description: JSON-LD context for the keys the artifact uses.
+        '@id':
+          type: string
+          format: uri
+          description: "The artifact's IRI. The server mints it on a POST, so a body\
+            \ sent to POST carries none; a body sent to PUT carries the IRI of the\
+            \ path."
+        '@type':
+          type: string
+          format: uri
+          description: IRI of the artifact kind.
+          enum:
+          - https://schema.metadatacenter.org/core/Template
+          - https://schema.metadatacenter.org/core/TemplateElement
+          - https://schema.metadatacenter.org/core/TemplateField
+          - https://schema.metadatacenter.org/core/StaticTemplateField
+        _ui:
+          type: object
+          additionalProperties: true
+          description: "Editor rendering directives: child order, labels, descriptions\
+            \ and, for a field, its input type."
+        bibo:status:
+          type: string
+          description: Publication status. A published artifact can no longer be changed.
+          enum:
+          - bibo:draft
+          - bibo:published
+        description:
+          type: string
+          description: "JSON Schema description, derived from the name."
+        oslc:modifiedBy:
+          type: string
+          format: uri
+          description: IRI of the user who last changed it.
+        pav:createdBy:
+          type: string
+          format: uri
+          description: IRI of the user who created it.
+        pav:createdOn:
+          type: string
+          format: date-time
+          description: When the artifact was created.
+        pav:derivedFrom:
+          type: string
+          format: uri
+          description: "IRI of the artifact this one was copied from, when there is\
+            \ one."
+          nullable: true
+        pav:lastUpdatedOn:
+          type: string
+          format: date-time
+          description: When the artifact was last changed.
+        pav:previousVersion:
+          type: string
+          format: uri
+          description: "IRI of the version this one was drafted from, when there is\
+            \ one."
+          nullable: true
+        pav:version:
+          type: string
+          description: The artifact's own version.
+        properties:
+          type: object
+          additionalProperties: true
+          description: "One entry per child field or element, keyed by its name, plus\
+            \ the JSON-LD keys an instance must carry."
+        required:
+          type: array
+          description: Names of the properties an instance must carry.
+          items:
+            type: string
+            description: Names of the properties an instance must carry.
+        schema:description:
+          type: string
+          description: Description shown with the name.
+        schema:identifier:
+          type: string
+          description: Caller-assigned identifier.
+          nullable: true
+        schema:name:
+          type: string
+          description: Display name.
+        schema:schemaVersion:
+          type: string
+          description: Version of the CEDAR model the artifact conforms to.
+        title:
+          type: string
+          description: "JSON Schema title, derived from the name."
+        type:
+          type: string
+          description: Always `object`.
   securitySchemes:
     api_key:
       description: "Your CEDAR API key, using the format 'apiKey <yourApiKey>'"
