@@ -9,18 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.mongodb.MongoException;
-import org.metadatacenter.util.artifact.SchemaArtifactDocument;
-import org.metadatacenter.util.http.CedarError;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
-import org.metadatacenter.id.CedarTemplateId;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.server.service.TemplateService;
-import org.metadatacenter.util.http.CedarResponse;
-import org.metadatacenter.util.json.JsonUtils;
+import org.metadatacenter.util.artifact.SchemaArtifactDocument;
+import org.metadatacenter.util.http.CedarError;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -30,8 +23,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import static org.metadatacenter.constant.CedarPathParameters.PP_ID;
-import static org.metadatacenter.rest.assertion.GenericAssertions.LoggedIn;
-import static org.metadatacenter.server.security.model.auth.CedarPermission.TEMPLATE_READ;
 
 @Path("/templates")
 @Produces(MediaType.APPLICATION_JSON)
@@ -39,71 +30,34 @@ import static org.metadatacenter.server.security.model.auth.CedarPermission.TEMP
 @SecurityRequirement(name = "api_key")
 public class TemplatesResource extends AbstractRepoResource {
 
-  private final TemplateService<String, JsonNode> templateService;
-
-  public TemplatesResource(CedarConfig cedarConfig, TemplateService<String, JsonNode> templateService) {
+  public TemplatesResource(CedarConfig cedarConfig) {
     super(cedarConfig);
-    this.templateService = templateService;
   }
 
   @GET
   @Timed
   @Path("/{id}")
   @Operation(summary = "Resolve a template identifier",
-      description = "Return the template a CEDAR identifier names. This is where an artifact's `@id` "
-          + "dereferences to, so the path segment is the bare identifier that ends that IRI rather "
-          + "than the IRI itself. Reading is checked twice: the caller needs the template read "
-          + "permission, and then read access to this particular artifact as the workspace records "
-          + "it. Mongo's internal `_id` is removed before the artifact is returned.")
+      description = "Dereference the bare identifier ending an artifact's @id. The resource server "
+          + "enforces the caller's read permission and workspace access and returns the stored JSON. "
+          + "Repo preserves its response body, status and representation headers.")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "The stored template",
           content = @Content(schema = @Schema(implementation = SchemaArtifactDocument.class))),
-      @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = CedarError.class)),
-          description = "The request carries no valid credentials, or the caller has no read access "
-              + "to this artifact. The second case is a permission failure reported as 401 rather "
-              + "than 403."),
-      @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = CedarError.class)), description = "The caller lacks the template read permission"),
-      @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = CedarError.class)),
-          description = "The workspace knows the identifier but the repository holds no such artifact"),
-      @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = CedarError.class)),
-          description = "Internal server error. Also returned for an identifier the workspace does "
-              + "not know at all, which is reported as a server error rather than as a 404.")
+      @ApiResponse(responseCode = "401", description = "No valid credentials",
+          content = @Content(schema = @Schema(implementation = CedarError.class))),
+      @ApiResponse(responseCode = "403", description = "The caller lacks read permission or access to this artifact",
+          content = @Content(schema = @Schema(implementation = CedarError.class))),
+      @ApiResponse(responseCode = "404", description = "No such artifact",
+          content = @Content(schema = @Schema(implementation = CedarError.class))),
+      @ApiResponse(responseCode = "503", description = "A required downstream service is unavailable",
+          content = @Content(schema = @Schema(implementation = CedarError.class))),
+      @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(schema = @Schema(implementation = CedarError.class)))
   })
   public Response findTemplate(
-      @Parameter(description = "The bare identifier ending the artifact's IRI, not the whole IRI. "
-          + "Example: 8bc64ab5-df6b-48c8-8c61-6c016245918e", required = true)
+      @Parameter(description = "The bare identifier ending the artifact's IRI.", required = true)
       @PathParam(PP_ID) String id) throws CedarException {
-
-    CedarRequestContext c = buildRequestContext();
-
-    c.must(c.user()).be(LoggedIn);
-    c.must(c.user()).have(TEMPLATE_READ);
-
-    String templateId = linkedDataUtil.getLinkedDataId(CedarResourceType.TEMPLATE, id);
-    CedarTemplateId tid = CedarTemplateId.build(templateId);
-
-    if (userHasNoReadAccessToArtifact(c, tid)) {
-      // The user is authenticated: be(LoggedIn) passed above. What failed is authorization, and a
-      // permission denial reported as 401 wrongly tells a client to re-authenticate, which cannot
-      // help. CedarErrorType states the rule; the resource server already answers 403 here.
-      return CedarResponse.forbidden()
-          .errorMessage("You do not have read access to this template")
-          .build();
-    }
-
-    try {
-      JsonNode template = templateService.findTemplate(templateId);
-      if (template != null) {
-        // Remove autogenerated _id field to avoid exposing it
-        template = JsonUtils.removeField(template, "_id");
-        return Response.ok().entity(template).build();
-      }
-      return CedarResponse.notFound().build();
-    } catch (MongoException e) {
-      throw e;
-    } catch (Exception e) {
-      return CedarResponse.internalServerError().exception(e).build();
-    }
+    return resolveArtifact(id, CedarResourceType.TEMPLATE);
   }
-
 }
