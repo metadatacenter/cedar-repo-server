@@ -1,6 +1,5 @@
 package org.metadatacenter.cedar.repo;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.dropwizard.testing.DropwizardTestSupport;
 import io.dropwizard.testing.ResourceHelpers;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -8,25 +7,17 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.bson.Document;
-import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.environment.CedarEnvironmentVariableProvider;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.SystemComponent;
-import org.metadatacenter.model.folderserver.basic.FolderServerTemplate;
-import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.rest.context.CedarRequestContextFactory;
-import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.util.json.JsonMapper;
-import org.metadatacenter.util.test.EmbeddedCedarMongo;
 import org.metadatacenter.util.test.EmbeddedCedarNeo4j;
 import org.metadatacenter.cedar.util.dw.CedarMicroserviceIndexResource;
 import org.metadatacenter.util.test.RouteSurface;
 import org.metadatacenter.util.test.TestAuthUtil;
 
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -35,22 +26,44 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
-/**
- * Route safety net: probes every endpoint the four repo artifact resources declare,
- * unauthenticated, and requires each to answer 401. A 404/405 means the route vanished or changed
- * verb; any other status means an endpoint lost its authentication assertion. The same application
- * boot also exercises a permitted Mongo-backed read against its graph permission record.
- */
+/** Exercises all dereference routes over HTTP with a controlled resource-server boundary. */
 public class RepoRoutesRespondTest {
 
+  private static final com.sun.net.httpserver.HttpServer RESOURCE;
+  private static volatile int upstreamStatus = 200;
+  private static volatile String upstreamBody = "{}";
+  private static volatile String forwardedAuthorization;
+  private static volatile String forwardedPath;
+  private static volatile String forwardedAccept;
+  private static final java.util.concurrent.atomic.AtomicInteger calls = new java.util.concurrent.atomic.AtomicInteger();
+
   static {
-    // Must run before the test support boots the server, which reads the port env vars. Ports are
-    // assigned by the OS, so they cannot collide with the dev server or another test.
-    EmbeddedCedarMongo.startAndRedirectEnvironment(Map.of(
+    try {
+      RESOURCE = com.sun.net.httpserver.HttpServer.create(new java.net.InetSocketAddress("127.0.0.1", 0), 0);
+      RESOURCE.createContext("/", exchange -> {
+        calls.incrementAndGet();
+        forwardedAuthorization = exchange.getRequestHeaders().getFirst("Authorization");
+        forwardedAccept = exchange.getRequestHeaders().getFirst("Accept");
+        forwardedPath = exchange.getRequestURI().getPath();
+        byte[] body = upstreamBody.getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
+        exchange.getResponseHeaders().set("ETag", "\"17\"");
+        exchange.getResponseHeaders().set("Vary", "Accept");
+        exchange.sendResponseHeaders(upstreamStatus, body.length);
+        try (var output = exchange.getResponseBody()) { output.write(body); }
+      });
+      RESOURCE.start();
+    } catch (java.io.IOException e) {
+      throw new ExceptionInInitializerError(e);
+    }
+    EmbeddedCedarNeo4j.startAndRedirectEnvironment(Map.of(
         "CEDAR_REPO_HTTP_PORT", "0",
         "CEDAR_REPO_ADMIN_PORT", "0",
-        "CEDAR_REPO_STOP_PORT", "0"));
-    EmbeddedCedarNeo4j.startAndRedirectEnvironment();
+        "CEDAR_REPO_STOP_PORT", "0",
+        "CEDAR_RESOURCE_SERVER_HOST", "127.0.0.1",
+        "CEDAR_RESOURCE_HTTP_PORT", String.valueOf(RESOURCE.getAddress().getPort()),
+        "CEDAR_MONGO_HOST", "127.0.0.1",
+        "CEDAR_MONGO_PORT", "1"));
   }
 
   private static final DropwizardTestSupport<RepoServerConfiguration> SERVER =
@@ -58,7 +71,6 @@ public class RepoRoutesRespondTest {
 
   private static final HttpClient CLIENT = HttpClient.newHttpClient();
   private static String authorization;
-  private static String templateId;
 
   @BeforeAll
   public static void startServer() throws Exception {
@@ -67,36 +79,12 @@ public class RepoRoutesRespondTest {
         CedarEnvironmentVariableProvider.getFor(SystemComponent.SERVER_REPO));
     TestAuthUtil.installInMemoryUserService(cedarConfig);
     authorization = TestAuthUtil.getTestUser1AuthHeader(cedarConfig);
-    EmbeddedCedarNeo4j.seed(cedarConfig);
-
-    CedarRequestContext context = CedarRequestContextFactory.fromUser(TestAuthUtil.getTestUser1(cedarConfig));
-    FolderServiceSession folderSession = CedarDataServices.getInstance().getFolderServiceSession(context);
-    FolderServerTemplate graphTemplate = new FolderServerTemplate();
-    templateId = cedarConfig.getLinkedDataUtil().buildNewLinkedDataId(CedarResourceType.TEMPLATE);
-    graphTemplate.setId(templateId);
-    graphTemplate.setName("Repo readable template");
-    graphTemplate.setDescription("Repo success-path fixture");
-    graphTemplate.setVersion("1.0.0");
-    graphTemplate.setPublicationStatus("bibo:draft");
-    graphTemplate.setLatestVersion(true);
-    graphTemplate.setLatestDraftVersion(true);
-    graphTemplate.setLatestPublishedVersion(false);
-    Assertions.assertNotNull(folderSession.createResourceAsChildOfId(
-        graphTemplate, folderSession.findHomeFolderOf().getResourceId()));
-
-    com.mongodb.client.MongoClient mongoClient =
-        CedarDataServices.getInstance().getMongoClientFactoryForDocuments().getClient();
-    org.metadatacenter.config.MongoConfig mongoConfig = cedarConfig.getArtifactServerConfig();
-    mongoClient.getDatabase(mongoConfig.getDatabaseName())
-        .getCollection(mongoConfig.getMongoCollectionName(CedarResourceType.TEMPLATE))
-        .insertOne(new Document("_id", "private-mongo-id")
-            .append("@id", templateId)
-            .append("schema:name", "Repo readable template"));
   }
 
   @AfterAll
   public static void stopServer() {
     SERVER.after();
+    RESOURCE.stop(0);
   }
 
   /**
@@ -122,29 +110,58 @@ public class RepoRoutesRespondTest {
   public void everyRouteRejectsAnUnauthenticatedRequest() {
     List<Class<?>> resources = resourceClasses();
     Assertions.assertFalse(resources.isEmpty(), "No repo resource classes found by reflection");
+    int before = calls.get();
     RouteSurface.assertEveryRouteAnswers(
         "http://localhost:" + SERVER.getLocalPort(),
         RouteSurface.endpoints(resources),
         401);
+    Assertions.assertEquals(before, calls.get(), "Missing credentials must not reach resource");
   }
 
   @Test
-  public void permittedReadReturnsArtifactWithoutMongoId() throws Exception {
-    String encodedId = URLEncoder.encode(templateId.substring(templateId.lastIndexOf('/') + 1),
-        StandardCharsets.UTF_8);
-    HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create("http://localhost:" + SERVER.getLocalPort() + "/templates/" + encodedId))
-        .header("Authorization", authorization)
-        .GET()
-        .build();
-
-    HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-
-    Assertions.assertEquals(200, response.statusCode(), response.body());
-    JsonNode artifact = JsonMapper.MAPPER.readTree(response.body());
-    Assertions.assertEquals(templateId, artifact.path("@id").asText());
-    Assertions.assertEquals("Repo readable template", artifact.path("schema:name").asText());
-    Assertions.assertTrue(artifact.path("_id").isMissingNode(), response.body());
+  public void everyArtifactKindDelegatesIdentityAndPreservesRepresentation() throws Exception {
+    for (String route : List.of("templates", "template-elements", "template-fields", "template-instances")) {
+      upstreamStatus = 200;
+      upstreamBody = "{\"@id\":\"https://example.org/artifact\",\"schema:name\":\"Readable artifact\"}";
+      HttpResponse<String> response = get(route);
+      Assertions.assertEquals(200, response.statusCode(), response.body());
+      Assertions.assertEquals(upstreamBody, response.body());
+      Assertions.assertEquals(authorization, forwardedAuthorization);
+      Assertions.assertEquals("application/json", forwardedAccept);
+      CedarConfig config = CedarConfig.getInstance(CedarEnvironmentVariableProvider.getFor(SystemComponent.SERVER_REPO));
+      CedarResourceType type = switch (route) {
+        case "templates" -> CedarResourceType.TEMPLATE;
+        case "template-elements" -> CedarResourceType.ELEMENT;
+        case "template-fields" -> CedarResourceType.FIELD;
+        default -> CedarResourceType.INSTANCE;
+      };
+      Assertions.assertEquals("/" + route + "/" + config.getLinkedDataUtil().getLinkedDataId(type, "fixture-id"), forwardedPath);
+      Assertions.assertEquals("\"17\"", response.headers().firstValue("ETag").orElseThrow());
+      Assertions.assertTrue(response.headers().allValues("Vary").stream().anyMatch(v -> v.contains("Accept")));
+      Assertions.assertTrue(response.headers().firstValue("Content-Type").orElseThrow().startsWith("application/json"));
+      Assertions.assertFalse(JsonMapper.STRICT_MAPPER.readTree(response.body()).has("_id"));
+    }
   }
 
+  @Test
+  public void denialMissingArtifactAndOutageAreNeverReplacedByLocalReads() throws Exception {
+    for (String route : List.of("templates", "template-elements", "template-fields", "template-instances")) {
+      for (int status : List.of(401, 403, 404, 503)) {
+        upstreamStatus = status;
+        upstreamBody = "{\"status\":" + status + ",\"message\":\"resource decision\"}";
+        int before = calls.get();
+        HttpResponse<String> response = get(route);
+        Assertions.assertEquals(status, response.statusCode(), response.body());
+        Assertions.assertEquals(upstreamBody, response.body());
+        Assertions.assertEquals(before + 1, calls.get(), "A read must not retry or fall back");
+      }
+    }
+  }
+
+  private static HttpResponse<String> get(String route) throws Exception {
+    return CLIENT.send(HttpRequest.newBuilder()
+        .uri(URI.create("http://localhost:" + SERVER.getLocalPort() + "/" + route + "/fixture-id"))
+        .header("Authorization", authorization)
+        .GET().build(), HttpResponse.BodyHandlers.ofString());
+  }
 }

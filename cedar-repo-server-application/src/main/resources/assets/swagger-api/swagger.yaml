@@ -11,7 +11,7 @@ info:
     permissions rather than the caller's role alone. Writes, listings, and validation belong to the
     artifact server.
   title: CEDAR Repo Server API
-  version: 2.9.10
+  version: 2.9.11
 paths:
   /:
     get:
@@ -223,16 +223,13 @@ paths:
       - Service diagnostics
   /template-elements/{id}:
     get:
-      description: "Return the template element a CEDAR identifier names. This is\
-        \ where an artifact's `@id` dereferences to, so the path segment is the bare\
-        \ identifier that ends that IRI rather than the IRI itself. Reading is checked\
-        \ twice: the caller needs the template element read permission, and then read\
-        \ access to this particular artifact as the workspace records it. Mongo's\
-        \ internal `_id` is removed before the artifact is returned."
+      description: "Dereference the bare identifier ending an artifact's @id. The\
+        \ resource server enforces the caller's read permission and workspace access\
+        \ and returns the stored JSON. Repo preserves its response body, status and\
+        \ representation headers."
       operationId: findTemplateElement
       parameters:
-      - description: "The bare identifier ending the artifact's IRI, not the whole\
-          \ IRI. Example: 8bc64ab5-df6b-48c8-8c61-6c016245918e"
+      - description: The bare identifier ending the artifact's IRI.
         in: path
         name: id
         required: true
@@ -250,30 +247,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: "The request carries no valid credentials, or the caller has\
-            \ no read access to this artifact. The second case is a permission failure\
-            \ reported as 401 rather than 403."
+          description: No valid credentials
         "403":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: The caller lacks the template element read permission
+          description: The caller lacks read permission or access to this artifact
         "404":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: The workspace knows the identifier but the repository holds
-            no such artifact
+          description: No such artifact
         "500":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: "Internal server error. Also returned for an identifier the\
-            \ workspace does not know at all, which is reported as a server error\
-            \ rather than as a 404."
+          description: Internal server error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: A required downstream service is unavailable
       security:
       - api_key: []
       summary: Resolve a template element identifier
@@ -281,16 +279,13 @@ paths:
       - Template elements
   /template-fields/{id}:
     get:
-      description: "Return the template field a CEDAR identifier names. This is where\
-        \ an artifact's `@id` dereferences to, so the path segment is the bare identifier\
-        \ that ends that IRI rather than the IRI itself. Reading is checked twice:\
-        \ the caller needs the template field read permission, and then read access\
-        \ to this particular artifact as the workspace records it. Mongo's internal\
-        \ `_id` is removed before the artifact is returned."
+      description: "Dereference the bare identifier ending an artifact's @id. The\
+        \ resource server enforces the caller's read permission and workspace access\
+        \ and returns the stored JSON. Repo preserves its response body, status and\
+        \ representation headers."
       operationId: findTemplateField
       parameters:
-      - description: "The bare identifier ending the artifact's IRI, not the whole\
-          \ IRI. Example: 8bc64ab5-df6b-48c8-8c61-6c016245918e"
+      - description: The bare identifier ending the artifact's IRI.
         in: path
         name: id
         required: true
@@ -308,30 +303,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: "The request carries no valid credentials, or the caller has\
-            \ no read access to this artifact. The second case is a permission failure\
-            \ reported as 401 rather than 403."
+          description: No valid credentials
         "403":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: The caller lacks the template field read permission
+          description: The caller lacks read permission or access to this artifact
         "404":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: The workspace knows the identifier but the repository holds
-            no such artifact
+          description: No such artifact
         "500":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: "Internal server error. Also returned for an identifier the\
-            \ workspace does not know at all, which is reported as a server error\
-            \ rather than as a 404."
+          description: Internal server error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: A required downstream service is unavailable
       security:
       - api_key: []
       summary: Resolve a template field identifier
@@ -339,16 +335,13 @@ paths:
       - Template fields
   /template-instances/{id}:
     get:
-      description: "Return the template instance a CEDAR identifier names. This is\
-        \ where an artifact's `@id` dereferences to, so the path segment is the bare\
-        \ identifier that ends that IRI rather than the IRI itself. Reading is checked\
-        \ twice: the caller needs the template instance read permission, and then\
-        \ read access to this particular artifact as the workspace records it. Mongo's\
-        \ internal `_id` is removed before the artifact is returned."
+      description: "Dereference the bare identifier ending an artifact's @id. The\
+        \ resource server enforces the caller's read permission and workspace access\
+        \ and returns the stored JSON. Repo preserves its response body, status and\
+        \ representation headers."
       operationId: findTemplateInstance
       parameters:
-      - description: "The bare identifier ending the artifact's IRI, not the whole\
-          \ IRI. Example: 8bc64ab5-df6b-48c8-8c61-6c016245918e"
+      - description: The bare identifier ending the artifact's IRI.
         in: path
         name: id
         required: true
@@ -366,30 +359,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: "The request carries no valid credentials, or the caller has\
-            \ no read access to this artifact. The second case is a permission failure\
-            \ reported as 401 rather than 403."
+          description: No valid credentials
         "403":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: The caller lacks the template instance read permission
+          description: The caller lacks read permission or access to this artifact
         "404":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: The workspace knows the identifier but the repository holds
-            no such artifact
+          description: No such artifact
         "500":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: "Internal server error. Also returned for an identifier the\
-            \ workspace does not know at all, which is reported as a server error\
-            \ rather than as a 404."
+          description: Internal server error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: A required downstream service is unavailable
       security:
       - api_key: []
       summary: Resolve a template instance identifier
@@ -397,16 +391,13 @@ paths:
       - Template instances
   /templates/{id}:
     get:
-      description: "Return the template a CEDAR identifier names. This is where an\
-        \ artifact's `@id` dereferences to, so the path segment is the bare identifier\
-        \ that ends that IRI rather than the IRI itself. Reading is checked twice:\
-        \ the caller needs the template read permission, and then read access to this\
-        \ particular artifact as the workspace records it. Mongo's internal `_id`\
-        \ is removed before the artifact is returned."
+      description: "Dereference the bare identifier ending an artifact's @id. The\
+        \ resource server enforces the caller's read permission and workspace access\
+        \ and returns the stored JSON. Repo preserves its response body, status and\
+        \ representation headers."
       operationId: findTemplate
       parameters:
-      - description: "The bare identifier ending the artifact's IRI, not the whole\
-          \ IRI. Example: 8bc64ab5-df6b-48c8-8c61-6c016245918e"
+      - description: The bare identifier ending the artifact's IRI.
         in: path
         name: id
         required: true
@@ -424,30 +415,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: "The request carries no valid credentials, or the caller has\
-            \ no read access to this artifact. The second case is a permission failure\
-            \ reported as 401 rather than 403."
+          description: No valid credentials
         "403":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: The caller lacks the template read permission
+          description: The caller lacks read permission or access to this artifact
         "404":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: The workspace knows the identifier but the repository holds
-            no such artifact
+          description: No such artifact
         "500":
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CedarError"
-          description: "Internal server error. Also returned for an identifier the\
-            \ workspace does not know at all, which is reported as a server error\
-            \ rather than as a 404."
+          description: Internal server error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CedarError"
+          description: A required downstream service is unavailable
       security:
       - api_key: []
       summary: Resolve a template identifier
@@ -457,7 +449,7 @@ components:
   schemas:
     CedarError:
       type: object
-      additionalProperties: true
+      additionalProperties: false
       description: A CEDAR error response. Diagnostic fields are populated only when
         they are relevant to the failure.
       properties:
@@ -601,12 +593,9 @@ components:
           - doiCanNotBeSet
           - doiAlreadyExists
           - dataCiteDOIDisabled
+          - pinnedVersionUnavailable
           - resourceNotFound
           - internalError
-          nullable: true
-        errorMessage:
-          type: string
-          description: Alias of message retained for compatibility.
           nullable: true
         errorReasonKey:
           type: string
