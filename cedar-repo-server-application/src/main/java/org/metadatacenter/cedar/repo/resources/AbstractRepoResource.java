@@ -34,7 +34,7 @@ public abstract class AbstractRepoResource extends CedarMicroserviceResource {
   protected Response resolveArtifact(String id, CedarResourceType type) throws CedarException {
     CedarRequestContext context = buildRequestContext();
     context.must(context.user()).be(LoggedIn);
-    String artifactId = linkedDataUtil.getLinkedDataId(type, id);
+    String artifactId = linkedDataUtil.resolveResourceId(type, id.contains("/") ? id : linkedDataUtil.getLinkedDataId(type, id));
     String url = microserviceUrlUtil.getResource().getArtifactTypeWithId(type, artifactId, Optional.empty());
     // Keep dereferencing JSON-only. Do not forward arbitrary query parameters or caller-selected
     // downstream hosts, and never fall back to Mongo when resource denies or cannot answer a read.
