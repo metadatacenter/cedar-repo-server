@@ -49,6 +49,10 @@ public class RepoRoutesRespondTest {
         exchange.getResponseHeaders().set("Content-Type", "application/json");
         exchange.getResponseHeaders().set("ETag", "\"17\"");
         exchange.getResponseHeaders().set("Vary", "Accept");
+        exchange.getResponseHeaders().add("Vary", "Origin");
+        exchange.getResponseHeaders().set("Retry-After", "17");
+        exchange.getResponseHeaders().set("WWW-Authenticate", "Bearer realm=\"resource\"");
+        if (upstreamStatus == 302) exchange.getResponseHeaders().set("Location", "/redirect-target");
         exchange.sendResponseHeaders(upstreamStatus, body.length);
         try (var output = exchange.getResponseBody()) { output.write(body); }
       });
@@ -146,13 +150,15 @@ public class RepoRoutesRespondTest {
   @Test
   public void denialMissingArtifactAndOutageAreNeverReplacedByLocalReads() throws Exception {
     for (String route : List.of("templates", "template-elements", "template-fields", "template-instances")) {
-      for (int status : List.of(401, 403, 404, 503)) {
+      for (int status : List.of(302, 401, 403, 404, 405, 429, 503, 504)) {
         upstreamStatus = status;
         upstreamBody = "{\"status\":" + status + ",\"message\":\"resource decision\"}";
         int before = calls.get();
         HttpResponse<String> response = get(route);
         Assertions.assertEquals(status, response.statusCode(), response.body());
         Assertions.assertEquals(upstreamBody, response.body());
+        Assertions.assertEquals("17", response.headers().firstValue("Retry-After").orElseThrow());
+        Assertions.assertEquals("Bearer realm=\"resource\"", response.headers().firstValue("WWW-Authenticate").orElseThrow());
         Assertions.assertEquals(before + 1, calls.get(), "A read must not retry or fall back");
       }
     }
