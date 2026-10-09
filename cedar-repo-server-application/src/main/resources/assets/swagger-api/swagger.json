@@ -3,7 +3,7 @@
   "info" : {
     "description" : "Better Metadata - Better Science\n\nFolders and artifacts use type-qualified selectors: `folders/<uuid>`, `templates/<uuid>`,\n`template-elements/<uuid>`, `template-fields/<uuid>`, or `template-instances/<uuid>`.\nTyped routes include the type once, for example `/templates/<uuid>`. Query parameters and\ncommand-body selectors retain the type, including folder parameters. Percent-encoded full\nIRIs remain accepted for compatibility. Stored document identities and references remain\nfull IRIs; legacy repository hosts must remain absolute until their data is migrated.\n\nThe repo server resolves CEDAR artifact identifiers. An artifact's `@id` is an IRI under this\nserver, and dereferencing that IRI returns the stored artifact, so every path here takes the\nbare identifier that ends the IRI rather than the whole IRI.\n\nIt is read-only, and it is the one artifact read path that checks the workspace's per-artifact\npermissions rather than the caller's role alone. Writes, listings, and validation belong to the\nartifact server.\n",
     "title" : "CEDAR Repo Server API",
-    "version" : "2.9.23"
+    "version" : "2.9.24"
   },
   "paths" : {
     "/" : {
