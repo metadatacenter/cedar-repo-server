@@ -6,6 +6,7 @@ import io.dropwizard.testing.ResourceHelpers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.environment.CedarEnvironmentVariableProvider;
@@ -22,6 +23,7 @@ import java.time.Duration;
 import java.util.Map;
 
 /** Proves that an authenticated Repo read reports a resource outage without leaking connection details. */
+@Tag("integration")
 class RepoResourceOutageTest {
 
   static {

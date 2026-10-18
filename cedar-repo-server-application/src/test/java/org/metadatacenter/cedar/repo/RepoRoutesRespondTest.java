@@ -6,6 +6,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.environment.CedarEnvironmentVariableProvider;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /** Exercises all dereference routes over HTTP with a controlled resource-server boundary. */
+@Tag("integration")
 public class RepoRoutesRespondTest {
 
   private static final com.sun.net.httpserver.HttpServer RESOURCE;
