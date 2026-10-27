@@ -166,9 +166,24 @@ public class RepoRoutesRespondTest {
     }
   }
 
+  @Test
+  public void aFullIdentifierIsResolvedAsGivenRatherThanMintedFromAUuid() throws Exception {
+    CedarConfig config = CedarConfig.getInstance(CedarEnvironmentVariableProvider.getFor(SystemComponent.SERVER_REPO));
+    String identifier = config.getLinkedDataUtil().getLinkedDataId(CedarResourceType.TEMPLATE, "fixture-id");
+    upstreamStatus = 200;
+    upstreamBody = "{}";
+    HttpResponse<String> response = get("templates", java.net.URLEncoder.encode(identifier, StandardCharsets.UTF_8));
+    Assertions.assertEquals(200, response.statusCode(), response.body());
+    Assertions.assertEquals("/templates/" + identifier, forwardedPath);
+  }
+
   private static HttpResponse<String> get(String route) throws Exception {
+    return get(route, "fixture-id");
+  }
+
+  private static HttpResponse<String> get(String route, String id) throws Exception {
     return CLIENT.send(HttpRequest.newBuilder()
-        .uri(URI.create("http://localhost:" + SERVER.getLocalPort() + "/" + route + "/fixture-id"))
+        .uri(URI.create("http://localhost:" + SERVER.getLocalPort() + "/" + route + "/" + id))
         .header("Authorization", authorization)
         .GET().build(), HttpResponse.BodyHandlers.ofString());
   }
