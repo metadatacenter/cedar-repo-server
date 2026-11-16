@@ -9,11 +9,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.config.environment.CedarEnvironmentSource;
 import org.metadatacenter.config.environment.CedarEnvironmentVariableProvider;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.SystemComponent;
 import org.metadatacenter.util.json.JsonMapper;
-import org.metadatacenter.util.test.EmbeddedCedarNeo4j;
 import org.metadatacenter.cedar.util.dw.CedarMicroserviceIndexResource;
 import org.metadatacenter.util.test.RouteSurface;
 import org.metadatacenter.util.test.TestAuthUtil;
@@ -25,6 +25,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /** Exercises all dereference routes over HTTP with a controlled resource-server boundary. */
@@ -62,14 +63,19 @@ public class RepoRoutesRespondTest {
     } catch (java.io.IOException e) {
       throw new ExceptionInInitializerError(e);
     }
-    EmbeddedCedarNeo4j.startAndRedirectEnvironment(Map.of(
-        "CEDAR_REPO_HTTP_PORT", "0",
-        "CEDAR_REPO_ADMIN_PORT", "0",
-        "CEDAR_REPO_STOP_PORT", "0",
-        "CEDAR_RESOURCE_SERVER_HOST", "127.0.0.1",
-        "CEDAR_RESOURCE_HTTP_PORT", String.valueOf(RESOURCE.getAddress().getPort()),
-        "CEDAR_MONGO_HOST", "127.0.0.1",
-        "CEDAR_MONGO_PORT", "1"));
+    // The application authenticates in memory and reads through the resource server, so it needs no
+    // graph. Neo4j points at a dead port rather than at an embedded graph started for nothing.
+    Map<String, String> environment = new HashMap<>(CedarEnvironmentSource.getAll());
+    environment.put("CEDAR_REPO_HTTP_PORT", "0");
+    environment.put("CEDAR_REPO_ADMIN_PORT", "0");
+    environment.put("CEDAR_REPO_STOP_PORT", "0");
+    environment.put("CEDAR_RESOURCE_SERVER_HOST", "127.0.0.1");
+    environment.put("CEDAR_RESOURCE_HTTP_PORT", String.valueOf(RESOURCE.getAddress().getPort()));
+    environment.put("CEDAR_MONGO_HOST", "127.0.0.1");
+    environment.put("CEDAR_MONGO_PORT", "1");
+    environment.put("CEDAR_NEO4J_HOST", "127.0.0.1");
+    environment.put("CEDAR_NEO4J_BOLT_PORT", "1");
+    CedarEnvironmentSource.setOverride(environment);
   }
 
   private static final DropwizardTestSupport<RepoServerConfiguration> SERVER =
