@@ -68,7 +68,6 @@ public class RepoRoutesRespondTest {
     Map<String, String> environment = new HashMap<>(CedarEnvironmentSource.getAll());
     environment.put("CEDAR_REPO_HTTP_PORT", "0");
     environment.put("CEDAR_REPO_ADMIN_PORT", "0");
-    environment.put("CEDAR_REPO_STOP_PORT", "0");
     environment.put("CEDAR_RESOURCE_SERVER_HOST", "127.0.0.1");
     environment.put("CEDAR_RESOURCE_HTTP_PORT", String.valueOf(RESOURCE.getAddress().getPort()));
     environment.put("CEDAR_MONGO_HOST", "127.0.0.1");
